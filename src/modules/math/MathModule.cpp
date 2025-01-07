@@ -199,6 +199,41 @@ float linearToGamma(float c)
 		return 1.055f * powf(c, 1.0f / 2.4f) - 0.055f;
 }
 
+float lerp(float a, float b, float t)
+{
+	return a + (b - a) * t;
+}
+
+float eerp(float a, float b, float t)
+{
+	return pow(a * (b / a), t);
+}
+
+float invlerp(float a, float b, float t)
+{
+	return (t - a) / (b - a);
+}
+
+float inveerp(float a, float b, float t)
+{
+	return log(a / t) / log(a / b);
+}
+
+float dist2sq(float x1, float y1, float x2, float y2)
+{
+	float dx = x1 - x2;
+	float dy = y1 - y2;
+	return dx * dx + dy * dy;
+}
+
+float dist3sq(float x1, float y1, float z1, float x2, float y2, float z2)
+{
+	float dx = x1 - x2;
+	float dy = y1 - y2;
+	float dz = z1 - z2;
+	return dx * dx + dy * dy + dz * dz;
+}
+
 Math::Math()
 	: Module(M_MATH, "love.math")
 {

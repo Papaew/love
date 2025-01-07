@@ -79,6 +79,17 @@ float gammaToLinear(float c);
 float linearToGamma(float c);
 
 /**
+ * Computes the interpolation between two values based on a given factor.
+ **/
+float lerp(float a, float b, float t);
+float eerp(float a, float b, float t);
+float invlerp(float a, float b, float t);
+float inveerp(float a, float b, float t);
+
+float dist2sq(float x1, float y1, float x2, float y2);
+float dist3sq(float x1, float y1, float z1, float x2, float y2, float z2);
+
+/**
  * Calculate noise for the specified coordinate(s).
  *
  * @return Noise value in the range of [0, 1].
