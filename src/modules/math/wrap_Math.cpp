@@ -348,6 +348,125 @@ int w_noise(lua_State *L)
 	return 1;
 }
 
+int w_dist2(lua_State *L)
+{
+	float x1 = (float) luaL_checknumber(L, 1);
+	float y1 = (float) luaL_checknumber(L, 2);
+	float x2 = (float) luaL_checknumber(L, 3);
+	float y2 = (float) luaL_checknumber(L, 4);
+	float result = dist2sq(x1, y1, x2, y2);
+	lua_pushnumber(L, (lua_Number) sqrt(result));
+	return 1;
+}
+
+int w_dist3(lua_State *L)
+{
+	float x1 = (float) luaL_checknumber(L, 1);
+	float y1 = (float) luaL_checknumber(L, 2);
+	float z1 = (float) luaL_checknumber(L, 3);
+	float x2 = (float) luaL_checknumber(L, 4);
+	float y2 = (float) luaL_checknumber(L, 5);
+	float z2 = (float) luaL_checknumber(L, 6);
+	float result = dist3sq(x1, y1, z1, x2, y2, z2);
+	lua_pushnumber(L, (lua_Number) sqrt(result));
+	return 1;
+}
+
+int w_dist2sq(lua_State *L)
+{
+	float x1 = (float) luaL_checknumber(L, 1);
+	float y1 = (float) luaL_checknumber(L, 2);
+	float x2 = (float) luaL_checknumber(L, 3);
+	float y2 = (float) luaL_checknumber(L, 4);
+	lua_pushnumber(L, (lua_Number) dist2sq(x1, y1, x2, y2));
+	return 1;
+}
+
+int w_dist3sq(lua_State *L)
+{
+	float x1 = (float) luaL_checknumber(L, 1);
+	float y1 = (float) luaL_checknumber(L, 2);
+	float z1 = (float) luaL_checknumber(L, 3);
+	float x2 = (float) luaL_checknumber(L, 4);
+	float y2 = (float) luaL_checknumber(L, 5);
+	float z2 = (float) luaL_checknumber(L, 6);
+	lua_pushnumber(L, (lua_Number) dist3sq(x1, y1, z1, x2, y2, z2));
+	return 1;
+}
+
+int w_round(lua_State *L)
+{
+	float value = (float) luaL_checknumber(L, 1);
+	lua_pushnumber(L, (lua_Number) round(value));
+	return 1;
+}
+
+int w_dot(lua_State *L)
+{
+	float x1 = (float) luaL_checknumber(L, 1);
+	float y1 = (float) luaL_checknumber(L, 2);
+	float x2 = (float) luaL_checknumber(L, 3);
+	float y2 = (float) luaL_checknumber(L, 4);
+	float result = x1 * x2 + y1 * y2;
+	lua_pushnumber(L, (lua_Number) result);
+	return 1;
+}
+
+int w_clamp(lua_State *L)
+{
+	float value = (float) luaL_checknumber(L, 1);
+	float low = (float) luaL_checknumber(L, 2);
+	float high = (float) luaL_checknumber(L, 3);
+
+	float result = std::max(std::min(value, high), low);
+	lua_pushnumber(L, (lua_Number) result);
+	return 1;
+}
+
+int w_lerp(lua_State *L)
+{
+	float a = (float) luaL_checknumber(L, 1);
+	float b = (float) luaL_checknumber(L, 2);
+	float t = (float) luaL_checknumber(L, 3);
+
+	float result = lerp(a, b, t);
+	lua_pushnumber(L, (lua_Number) result);
+	return 1;
+}
+
+int w_eerp(lua_State *L)
+{
+	float a = (float) luaL_checknumber(L, 1);
+	float b = (float) luaL_checknumber(L, 2);
+	float t = (float) luaL_checknumber(L, 3);
+
+	float result = eerp(a, b, t);
+	lua_pushnumber(L, (lua_Number) result);
+	return 1;
+}
+
+int w_invlerp(lua_State *L)
+{
+	float a = (float) luaL_checknumber(L, 1);
+	float b = (float) luaL_checknumber(L, 2);
+	float t = (float) luaL_checknumber(L, 3);
+
+	float result = invlerp(a, b, t);
+	lua_pushnumber(L, (lua_Number) result);
+	return 1;
+}
+
+int w_inveerp(lua_State *L)
+{
+	float a = (float) luaL_checknumber(L, 1);
+	float b = (float) luaL_checknumber(L, 2);
+	float t = (float) luaL_checknumber(L, 3);
+
+	float result = inveerp(a, b, t);
+	lua_pushnumber(L, (lua_Number) result);
+	return 1;
+}
+
 int w_perlinNoise(lua_State* L)
 {
 	int nargs = std::min(std::max(lua_gettop(L), 1), 4);
@@ -456,6 +575,19 @@ static const luaL_Reg functions[] =
 	{ "noise", w_noise },
 	{ "perlinNoise", w_perlinNoise },
 	{ "simplexNoise", w_simplexNoise },
+
+	{ "dist2", w_dist2 },
+	{ "dist3", w_dist3 },
+	{ "dist2sq", w_dist2sq },
+	{ "dist3sq", w_dist3sq },
+
+	{ "dot", w_dot },
+	{ "round", w_round },
+	{ "clamp", w_clamp },
+	{ "lerp", w_lerp },
+	{ "eerp", w_eerp },
+	{ "invlerp", w_invlerp },
+	{ "inveerp", w_inveerp },
 
 	{ 0, 0 }
 };
