@@ -168,6 +168,12 @@ extern "C"
 #if defined(LOVE_ENABLE_WINDOW)
 	extern int luaopen_love_window(lua_State*);
 #endif
+#if defined(LOVE_ENABLE_TABLET)
+	extern int luaopen_love_tablet(lua_State*);
+#endif
+#if defined(LOVE_ENABLE_CAMERA)
+	extern int luaopen_love_camera(lua_State*);
+#endif
 	extern int luaopen_love_nogame(lua_State*);
 	extern int luaopen_love_jitsetup(lua_State*);
 	extern int luaopen_love_arg(lua_State*);
@@ -239,6 +245,12 @@ static const luaL_Reg modules[] = {
 #endif
 #if defined(LOVE_ENABLE_WINDOW)
 	{ "love.window", luaopen_love_window },
+#endif
+#if defined(LOVE_ENABLE_TABLET)
+	{ "love.tablet", luaopen_love_tablet },
+#endif
+#if defined(LOVE_ENABLE_CAMERA)
+	{ "love.camera", luaopen_love_camera },
 #endif
 	{ "love.nogame", luaopen_love_nogame },
 	{ "love.jitsetup", luaopen_love_jitsetup },

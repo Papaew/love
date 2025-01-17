@@ -1,24 +1,24 @@
 
 // LOVE
 #include "common/config.h"
-#include "Camera.h"
+#include "Tablet.h"
 
 namespace love
 {
-namespace camera
+namespace tablet
 {
 
-Camera::Camera()
-	: Module(M_CAMERA, "love.camera")
+Tablet::Tablet()
+	: Module(M_TABLET, "love.tablet")
 	, fps(0)
 {
 	// prevFpsUpdate = currTime = getTime();
 }
 
-int Camera::getFPS() const
+int Tablet::getFPS() const
 {
 	return fps;
 }
 
-} // camera
+} // tablet
 } // love

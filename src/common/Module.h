@@ -59,6 +59,8 @@ public:
 		M_TOUCH,
 		M_VIDEO,
 		M_WINDOW,
+		M_TABLET,
+		M_CAMERA,
 		M_MAX_ENUM
 	};
 

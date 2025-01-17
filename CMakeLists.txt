@@ -175,7 +175,7 @@ Please see https://github.com/love2d/megasource
 	# required for enet
 	add_definitions(-D HAS_SOCKLEN_T)
 
-	find_package(SDL3 3.1.3 REQUIRED CONFIG)
+	find_package(SDL3 3.1.10 REQUIRED CONFIG)
 	target_include_directories(lovedep::SDL INTERFACE ${SDL3_INCLUDE_DIRS})
 	target_link_libraries(lovedep::SDL INTERFACE ${SDL3_LIBRARIES})
 
@@ -1255,6 +1255,35 @@ target_link_libraries(love_window INTERFACE
 	love_window_sdl
 )
 
+#
+# love.tablet
+#
+
+add_library(love_tablet STATIC
+	src/modules/tablet/Tablet.cpp
+	src/modules/tablet/Tablet.h
+	src/modules/tablet/wrap_Tablet.cpp
+	src/modules/tablet/wrap_Tablet.h
+)
+target_link_libraries(love_tablet PUBLIC
+	lovedep::Lua
+)
+
+#
+# love.camera
+#
+
+add_library(love_camera STATIC
+	src/modules/camera/Camera.cpp
+	src/modules/camera/Camera.h
+	src/modules/camera/wrap_Camera.cpp
+	src/modules/camera/wrap_Camera.h
+)
+target_link_libraries(love_camera PUBLIC
+	lovedep::Lua
+)
+
+
 ###################################
 # Third-party libraries
 ###################################
@@ -1930,6 +1959,8 @@ set(LIBLOVE_DEPENDENCIES
 	love_touch
 	love_video
 	love_window
+	love_tablet
+	love_camera
 )
 set(LIBLOVE_LIBRARIES
 	love_3p_box2d
