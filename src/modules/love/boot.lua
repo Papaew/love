@@ -206,6 +206,8 @@ function love.init()
 			font = true,
 			thread = true,
 			window = true,
+			tablet = true,
+			camera = true,
 			video = true,
 		},
 		audio = {
@@ -348,6 +350,8 @@ function love.init()
 		"video",
 		"font",
 		"window",
+		"tablet",
+		"camera",
 		"graphics",
 		"math",
 		"physics",

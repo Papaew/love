@@ -1,21 +1,21 @@
 
-#ifndef LOVE_CAMERA_CAMERA_H
-#define LOVE_CAMERA_CAMERA_H
+#ifndef LOVE_TABLET_TABLET_H
+#define LOVE_TABLET_TABLET_H
 
 // LOVE
 #include "common/Module.h"
 
 namespace love
 {
-namespace camera
+namespace tablet
 {
 
-class Camera : public Module
+class Tablet : public Module
 {
 public:
 
-	Camera();
-	virtual ~Camera() {}
+	Tablet();
+	virtual ~Tablet() {}
 
 	/**
 	 * Gets the average FPS over the last second. Beucase the value is only updated
@@ -28,9 +28,9 @@ private:
 	// Updated with a certain frequency.
 	int fps;
 
-}; // Camera
+}; // Tablet
 
-} // camera
+} // tablet
 } // love
 
-#endif // LOVE_CAMERA_CAMERA_H
+#endif // LOVE_TABLET_TABLET_H
