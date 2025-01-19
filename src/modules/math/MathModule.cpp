@@ -26,6 +26,8 @@
 #include "BezierCurve.h"
 #include "Transform.h"
 
+#include "poly2tri/poly2tri.h"
+
 // STL
 #include <cmath>
 #include <list>
@@ -78,6 +80,35 @@ bool any_point_in_triangle(const std::list<const Vector2 *> &vertices, const Vec
 inline bool is_ear(const Vector2 &a, const Vector2 &b, const Vector2 &c, const std::list<const Vector2 *> &vertices)
 {
 	return is_oriented_ccw(a,b,c) && !any_point_in_triangle(vertices, a,b,c);
+}
+
+double PerpendicularDistance(const love::Vector2 &pt, const love::Vector2 &lineStart, const love::Vector2 &lineEnd)
+{
+	double dx = lineEnd.x - lineStart.x;
+	double dy = lineEnd.y - lineStart.y;
+
+	//Normalise
+	double mag = pow(pow(dx,2.0)+pow(dy,2.0),0.5);
+	if(mag > 0.0)
+	{
+		dx /= mag; dy /= mag;
+	}
+
+	double pvx = pt.x - lineStart.x;
+	double pvy = pt.y - lineStart.y;
+
+	//Get dot product (project pv onto normalized direction)
+	double pvdot = dx * pvx + dy * pvy;
+
+	//Scale line direction vector
+	double dsx = pvdot * dx;
+	double dsy = pvdot * dy;
+
+	//Subtract this from pv
+	double ax = pvx - dsx;
+	double ay = pvy - dsy;
+
+	return pow(pow(ax,2.0)+pow(ay,2.0),0.5);
 }
 
 } // anonymous namespace
@@ -150,6 +181,54 @@ std::vector<Triangle> triangulate(const std::vector<love::Vector2> &polygon)
 	triangles.push_back(Triangle(polygon[prev], polygon[current], polygon[next]));
 
 	return triangles;
+}
+
+/**
+ * https://en.wikipedia.org/wiki/Ramer–Douglas–Peucker_algorithm
+ **/
+void simplifyCurve(const std::vector<love::Vector2> &points, std::vector<love::Vector2> &out, double &epsilon)
+{
+	if (points.size() < 2)
+		throw love::Exception("Need at least 2 vertices to simplify (got %d)", (int) points.size());
+
+	// Find the point with the maximum distance from line between start and end
+	double dmax = 0.0;
+	size_t index = 0;
+	size_t end = points.size()-1;
+	for(size_t i = 1; i < end; i++)
+	{
+		double d = PerpendicularDistance(points[i], points[0], points[end]);
+		if (d > dmax)
+		{
+			index = i;
+			dmax = d;
+		}
+	}
+
+	// If max distance is greater than epsilon, recursively simplify
+	if(dmax > epsilon)
+	{
+		// Recursive call
+		std::vector<love::Vector2> recResults1;
+		std::vector<love::Vector2> recResults2;
+		std::vector<love::Vector2> firstLine(points.begin(), points.begin()+index+1);
+		std::vector<love::Vector2> lastLine(points.begin()+index, points.end());
+		simplifyCurve(firstLine, recResults1, epsilon);
+		simplifyCurve(lastLine, recResults2, epsilon);
+ 
+		// Build the result list
+		out.assign(recResults1.begin(), recResults1.end()-1);
+		out.insert(out.end(), recResults2.begin(), recResults2.end());
+		if (out.size() < 2)
+			throw love::Exception("Problem assembling output");
+	} 
+	else 
+	{
+		//Just return start and end points
+		out.clear();
+		out.push_back(points[0]);
+		out.push_back(points[end]);
+	}
 }
 
 bool isConvex(const std::vector<love::Vector2> &polygon)
