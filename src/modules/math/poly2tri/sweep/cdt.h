@@ -40,7 +40,7 @@
  *
  * @author Mason Green <mason.green@gmail.com>
  *
-*/
+ */
 
 namespace p2t
 {
@@ -52,47 +52,47 @@ public:
 	 * Constructor - add polyline with non repeating points
 	 *
 	 * @param polyline
-	*/
-	CDT(const std::vector<Point *> &polyline);
+	 */
+	CDT(std::vector<Point *> polyline);
 
 	/**
 	 * Destructor - clean up memory
-	*/
+	 */
 	~CDT();
 
 	/**
 	 * Add a hole
 	 *
 	 * @param polyline
-	*/
-	void AddHole(const std::vector<Point *> &polyline);
+	 */
+	void AddHole(std::vector<Point *> polyline);
 
 	/**
 	 * Add a steiner point
 	 *
 	 * @param point
-	*/
+	 */
 	void AddPoint(Point *point);
 
 	/**
 	 * Triangulate - do this AFTER you've added the polyline, holes, and Steiner points
-	*/
+	 */
 	void Triangulate();
 
 	/**
 	 * Get CDT triangles
-	*/
+	 */
 	std::vector<Triangle *> GetTriangles();
 
 	/**
 	 * Get triangle map
-	*/
+	 */
 	std::list<Triangle *> GetMap();
 
 private:
 	/**
 	 * Internals
-	*/
+	 */
 
 	SweepContext *sweep_context_;
 	Sweep *sweep_;

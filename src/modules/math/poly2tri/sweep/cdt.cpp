@@ -1,4 +1,4 @@
-/*
+/* 
  * Poly2Tri Copyright (c) 2009-2010, Poly2Tri Contributors
  * http://code.google.com/p/poly2tri/
  *
@@ -27,19 +27,18 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
+ */
 #include "cdt.h"
 
 namespace p2t {
 
-CDT::CDT(const std::vector<Point*>& polyline)
+CDT::CDT(std::vector<Point*> polyline)
 {
   sweep_context_ = new SweepContext(polyline);
   sweep_ = new Sweep;
 }
 
-void CDT::AddHole(const std::vector<Point*>& polyline)
+void CDT::AddHole(std::vector<Point*> polyline)
 {
   sweep_context_->AddHole(polyline);
 }
@@ -70,3 +69,4 @@ CDT::~CDT()
 }
 
 }
+
