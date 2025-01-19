@@ -60,6 +60,8 @@ struct Triangle
  **/
 std::vector<Triangle> triangulate(const std::vector<love::Vector2> &polygon);
 
+void simplifyCurve(const std::vector<love::Vector2> &points, std::vector<love::Vector2> &out, double &epsilon);
+
 /**
  * Checks whether a polygon is convex.
  *

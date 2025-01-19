@@ -147,6 +147,68 @@ int w_newTransform(lua_State *L)
 	return 1;
 }
 
+int w_simplifyCurve(lua_State *L)
+{
+	if (!lua_isnumber(L, 1))
+	{
+		return luaL_error(L, "First argument must be a number.");
+	}
+
+	double tolerance = lua_tonumber(L, 1);
+	// tolerance *= tolerance; // squared
+	
+	std::vector<love::Vector2> vertices;
+	if (lua_istable(L, 2))
+	{
+		int top = (int) luax_objlen(L, 2);
+		vertices.reserve(top / 2);
+		for (int i = 1; i <= top; i += 2)
+		{
+			lua_rawgeti(L, 2, i);
+			lua_rawgeti(L, 2, i+1);
+
+			Vector2 v;
+			v.x = (float) luaL_checknumber(L, -2);
+			v.y = (float) luaL_checknumber(L, -1);
+			vertices.push_back(v);
+
+			lua_pop(L, 2);
+		}
+	}
+	else
+	{
+		int top = (int) lua_gettop(L) - 1; // exclude first arg
+		vertices.reserve(top / 2);
+		for (int i = 2; i <= top; i += 2)
+		{
+			Vector2 v;
+			v.x = (float) luaL_checknumber(L, i);
+			v.y = (float) luaL_checknumber(L, i+1);
+			vertices.push_back(v);
+		}
+	}
+
+	if (vertices.size() < 2)
+		return luaL_error(L, "Need at least 2 vertices to simplify (got %d).", (int)vertices.size());
+
+	std::vector<love::Vector2> simplified;
+	simplifyCurve(vertices, simplified, tolerance);
+
+	lua_createtable(L, (int) simplified.size() * 2, 0);
+	for (int i = 0; i < (int) simplified.size(); ++i)
+	{
+		const Vector2 &tri = simplified[i];
+
+		lua_pushnumber(L, tri.x);
+		lua_rawseti(L, -2, i * 2 + 1);
+
+		lua_pushnumber(L, tri.y);
+		lua_rawseti(L, -2, i * 2 + 2);
+	}
+
+	return 1;
+}
+
 /* int w_triangulate(lua_State *L)
 {
 	std::vector<love::Vector2> vertices;
@@ -681,6 +743,7 @@ static const luaL_Reg functions[] =
 	{ "newRandomGenerator", w_newRandomGenerator },
 	{ "newBezierCurve", w_newBezierCurve },
 	{ "newTransform", w_newTransform },
+	{ "simplifyCurve", w_simplifyCurve },
 	{ "triangulate", w_triangulate },
 	{ "isConvex", w_isConvex },
 	{ "gammaToLinear", w_gammaToLinear },
