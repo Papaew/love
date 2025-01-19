@@ -832,6 +832,11 @@ target_link_libraries(love_keyboard INTERFACE
 #
 
 add_library(love_math STATIC
+	src/modules/math/poly2tri/common/shapes.cpp
+	src/modules/math/poly2tri/sweep/advancing_front.cpp
+	src/modules/math/poly2tri/sweep/cdt.cpp
+	src/modules/math/poly2tri/sweep/sweep.cpp
+	src/modules/math/poly2tri/sweep/sweep_context.cpp
 	src/modules/math/BezierCurve.cpp
 	src/modules/math/BezierCurve.h
 	src/modules/math/MathModule.cpp

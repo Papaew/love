@@ -26,6 +26,8 @@
 #include "BezierCurve.h"
 #include "Transform.h"
 
+#include "poly2tri/poly2tri.h"
+
 #include <cmath>
 #include <iostream>
 #include <algorithm>
@@ -145,7 +147,7 @@ int w_newTransform(lua_State *L)
 	return 1;
 }
 
-int w_triangulate(lua_State *L)
+/* int w_triangulate(lua_State *L)
 {
 	std::vector<love::Vector2> vertices;
 	if (lua_istable(L, 1))
@@ -212,6 +214,117 @@ int w_triangulate(lua_State *L)
 		lua_rawseti(L, -2, i+1);
 	}
 
+	return 1;
+} */
+
+int w_triangulate(lua_State *L)
+{
+	std::vector<p2t::Point*> vertices;
+	if (lua_istable(L, 1))
+	{
+		int top = (int) luax_objlen(L, 1);
+		vertices.reserve(top / 2);
+		for (int i = 1; i <= top; i += 2)
+		{
+			lua_rawgeti(L, 1, i);
+			lua_rawgeti(L, 1, i+1);
+
+			double x = (double) luaL_checknumber(L, -2);
+			double y = (double) luaL_checknumber(L, -1);
+			vertices.push_back(new p2t::Point(x, y));
+
+			lua_pop(L, 2);
+		}
+	}
+	else
+	{
+		int top = (int) lua_gettop(L);
+		vertices.reserve(top / 2);
+		for (int i = 1; i <= top; i += 2)
+		{
+			double x = (double) luaL_checknumber(L, i);
+			double y = (double) luaL_checknumber(L, i+1);
+			vertices.push_back(new p2t::Point(x, y));
+		}
+	}
+
+	if (vertices.size() < 3)
+		return luaL_error(L, "Need at least 3 vertices to triangulate (got %d).", (int)vertices.size());
+
+	p2t::CDT* cdt = new p2t::CDT(vertices);
+
+	if (lua_gettop(L) == 2 && lua_istable(L, 1) && lua_istable(L, 2))
+	{
+		int len = (int) luax_objlen(L, 2);
+
+		for (int i = 1; i <= len; i++)
+		{
+			lua_rawgeti(L, 2, i);
+
+			if (lua_istable(L, -1))
+			{
+				std::vector<p2t::Point*> hole;
+				int top = (int) luax_objlen(L, -1);
+				hole.reserve(top / 2);
+
+				for (int j = 1; j <= top; j += 2)
+				{
+					lua_rawgeti(L, -1, j);
+					lua_rawgeti(L, -2, j+1);
+
+					double x = (double) luaL_checknumber(L, -2);
+					double y = (double) luaL_checknumber(L, -1);
+					hole.push_back(new p2t::Point(x, y));
+
+					lua_pop(L, 2);
+				}
+
+				if (hole.size() < 3)
+					return luaL_error(L, "Need at least 3 vertices to triangulate hole (got %d).", (int)hole.size());
+
+				cdt->AddHole(hole);
+
+				// for (size_t i = 0; i < hole.size(); ++i)
+				// 	delete hole[i];
+			}
+			else
+			{
+				return luaL_error(L, "Value must be a table");
+			}
+
+			lua_pop(L, 1);
+		}
+	}
+
+	cdt->Triangulate();
+	std::vector<p2t::Triangle*> triangles = cdt->GetTriangles();
+
+	lua_createtable(L, (int) triangles.size(), 0);
+	for (int i = 0; i < (int) triangles.size(); ++i)
+	{
+		// const Triangle &tri = triangles[i];
+
+		lua_createtable(L, 6, 0);
+
+		lua_pushnumber(L, triangles[i]->GetPoint(0)->x);
+		lua_rawseti(L, -2, 1);
+		lua_pushnumber(L, triangles[i]->GetPoint(0)->y);
+		lua_rawseti(L, -2, 2);
+		lua_pushnumber(L, triangles[i]->GetPoint(1)->x);
+		lua_rawseti(L, -2, 3);
+		lua_pushnumber(L, triangles[i]->GetPoint(1)->y);
+		lua_rawseti(L, -2, 4);
+		lua_pushnumber(L, triangles[i]->GetPoint(2)->x);
+		lua_rawseti(L, -2, 5);
+		lua_pushnumber(L, triangles[i]->GetPoint(2)->y);
+		lua_rawseti(L, -2, 6);
+
+		lua_rawseti(L, -2, i+1);
+	}
+
+	for (size_t i = 0; i < vertices.size(); ++i)
+		delete vertices[i];
+	delete cdt;
 	return 1;
 }
 
