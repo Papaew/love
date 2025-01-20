@@ -20,6 +20,7 @@
 
 // LOVE
 #include "wrap_DataModule.h"
+#include "wrap_SpatialHash.h"
 #include "wrap_Data.h"
 #include "wrap_ByteData.h"
 #include "wrap_DataView.h"
@@ -50,6 +51,26 @@ ContainerType luax_checkcontainertype(lua_State *L, int idx)
 	if (!getConstant(str, ctype))
 		luax_enumerror(L, "container type", getConstants(ctype), str);
 	return ctype;
+}
+
+int w_newSpatialHash(lua_State *L)
+{
+	SpatialHash *s = nullptr;
+
+	if (lua_isnumber(L, 1) && lua_isnumber(L, 2))
+	{
+		int maxObjects = (int) luaL_checknumber(L, 1);
+		float cellSize = (float) luaL_checknumber(L, 2);
+		s = instance()->newSpatialHash(maxObjects, cellSize);
+	}
+	else
+	{
+		return luaL_error(L, "SpatialHash init error.");
+	}
+
+	luax_pushtype(L, s);
+	s->release();
+	return 1;
 }
 
 int w_newDataView(lua_State *L)
@@ -419,6 +440,7 @@ int w_unpack(lua_State *L)
 static const luaL_Reg functions[] =
 {
 	{ "newDataView", w_newDataView },
+	{ "newSpatialHash", w_newSpatialHash },
 	{ "newByteData", w_newByteData },
 	{ "compress", w_compress },
 	{ "decompress", w_decompress },
@@ -436,6 +458,7 @@ static const luaL_Reg functions[] =
 static const lua_CFunction types[] =
 {
 	luaopen_data,
+	luaopen_spatialhash,
 	luaopen_bytedata,
 	luaopen_dataview,
 	luaopen_compresseddata,

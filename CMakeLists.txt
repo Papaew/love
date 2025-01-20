@@ -388,6 +388,8 @@ target_link_libraries(love_audio INTERFACE
 add_library(love_data STATIC
 	src/modules/data/ByteData.cpp
 	src/modules/data/ByteData.h
+	src/modules/data/SpatialHash.cpp
+	src/modules/data/SpatialHash.h
 	src/modules/data/CompressedData.cpp
 	src/modules/data/CompressedData.h
 	src/modules/data/Compressor.cpp
@@ -402,6 +404,8 @@ add_library(love_data STATIC
 	src/modules/data/HashFunction.h
 	src/modules/data/wrap_ByteData.cpp
 	src/modules/data/wrap_ByteData.h
+	src/modules/data/wrap_SpatialHash.cpp
+	src/modules/data/wrap_SpatialHash.h
 	src/modules/data/wrap_CompressedData.cpp
 	src/modules/data/wrap_CompressedData.h
 	src/modules/data/wrap_Data.cpp
