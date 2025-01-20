@@ -227,6 +227,11 @@ DataView *DataModule::newDataView(Data *data, size_t offset, size_t size)
 	return new DataView(data, offset, size);
 }
 
+SpatialHash *DataModule::newSpatialHash(int maxObjects, float cellSize)
+{
+	return new SpatialHash(maxObjects, cellSize);
+}
+
 ByteData *DataModule::newByteData(size_t size)
 {
 	return new ByteData(size);
