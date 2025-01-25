@@ -1,16 +1,19 @@
 #include "SpatialHash.h"
+#include <iostream>
 #include <cstring>
 #include <cmath>
 
-static int32_t hashCoords(float x, float y, int32_t tableSize)
+/* const int X_HASH_CONST = 73856093;
+const int Y_HASH_CONST = 73856093;
+static int hashCoords(float x, float y, int tableSize)
 {
-	int32_t xi = static_cast<int32_t>(x);
-	int32_t yi = static_cast<int32_t>(y);
+	int xi = static_cast<int>(x);
+	int yi = static_cast<int>(y);
 
-	int32_t h = (xi * 73856093) ^ (yi * 83492791);
-	// int32_t h = (xi * 92837111) ^ (yi * 689287499);
+	int h = (xi * X_HASH_CONST) ^ (yi * Y_HASH_CONST);
+	// int h = (xi * 92837111) ^ (yi * 689287499);
 	return abs(h) % tableSize;
-}
+} */
 
 namespace love
 {
@@ -19,12 +22,19 @@ namespace data
 
 love::Type SpatialHash::type("SpatialHash", &Object::type);
 
-SpatialHash::SpatialHash(int maxObjects, float cellSize)
-	: maxObjects(maxObjects), cellSize(cellSize), tableSize(2 * maxObjects), querySize(0)
+SpatialHash::SpatialHash(int maxObjects, float spacing)
+	: data(maxObjects * sizeof(float) * 2)
+	, pData(nullptr)
+	, spacing(spacing)
+	, maxObjectCount(maxObjects)
+	, tableSize(2 * maxObjects)
+	, querySize(0)
+	, objCount(0)
 {
-	cellStart = new int32_t[tableSize + 1];
-	cellEntries = new int32_t[maxObjects];
-	queryIds = new int32_t[maxObjects];
+	pData = static_cast<float *>(data.getData());
+	cellStart = new int[tableSize + 1];
+	cellEntries = new int[maxObjects];
+	queryIds = new int[(int) maxObjects/2];
 }
 
 SpatialHash::~SpatialHash()
@@ -32,11 +42,43 @@ SpatialHash::~SpatialHash()
 	delete[] cellStart;
 	delete[] cellEntries;
 	delete[] queryIds;
+
+	pData = nullptr;
 }
 
-void SpatialHash::add(int32_t id, float x, float y)
+const love::data::ByteData &SpatialHash::getData() const
 {
-	printf("SpatialHash add\n");
+	return data;
+}
+
+int SpatialHash::add(float &x, float &y)
+{
+	if (objCount < maxObjectCount)
+	{
+		int index = objCount*2;
+		pData[index] = x;
+		pData[index+1] = y;
+		objCount++;
+		return objCount-1;
+	}
+	return -1;
+}
+
+void SpatialHash::set(int index, float x, float y)
+{
+	pData[index*2] = x;
+	pData[index*2+1] = y;
+}
+
+bool SpatialHash::get(int index, float &x, float &y)
+{
+	bool acceptable = objCount > 0 && index >= 0 && index < objCount;
+	if (acceptable)
+	{
+		x = pData[index*2];
+		y = pData[index*2+1];
+	}
+	return acceptable;
 }
 
 void SpatialHash::query(float x, float y, float maxDist)
@@ -44,12 +86,23 @@ void SpatialHash::query(float x, float y, float maxDist)
 	printf("SpatialHash query\n");
 }
 
-void SpatialHash::reset()
+void SpatialHash::query(float x1, float y1, float x2, float y2)
 {
-	memset(cellStart, 0, sizeof(int32_t) * (tableSize + 1));
-    memset(cellEntries, 0, sizeof(int32_t) * maxObjects);
-    memset(queryIds, 0, sizeof(int32_t) * maxObjects);
+	printf("SpatialHash query\n");
+}
+
+void SpatialHash::clear()
+{
+	memset(cellStart, 0, sizeof(int) * (tableSize + 1));
+	memset(cellEntries, 0, sizeof(int) * maxObjectCount);
+	memset(queryIds, 0, sizeof(int) * maxObjectCount);
 	querySize = 0;
+	objCount = 0;
+}
+
+void SpatialHash::process()
+{
+	clear();
 }
 
 } // data

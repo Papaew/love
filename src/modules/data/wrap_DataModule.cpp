@@ -27,6 +27,7 @@
 #include "wrap_CompressedData.h"
 #include "DataModule.h"
 #include "common/b64.h"
+#include "common/Vector.h"
 
 // Lua 5.3
 #include "libraries/lua53/lstrlib.h"
@@ -59,9 +60,9 @@ int w_newSpatialHash(lua_State *L)
 
 	if (lua_isnumber(L, 1) && lua_isnumber(L, 2))
 	{
-		int maxObjects = (int) luaL_checknumber(L, 1);
+		int maxObjectCount = (int) luaL_checknumber(L, 1);
 		float cellSize = (float) luaL_checknumber(L, 2);
-		s = instance()->newSpatialHash(maxObjects, cellSize);
+		s = instance()->newSpatialHash(maxObjectCount, cellSize);
 	}
 	else
 	{
@@ -436,6 +437,46 @@ int w_unpack(lua_State *L)
 	return lua53_str_unpack(L, fmt, data, datasize, 2, 3);
 }
 
+int w_sizeOf(lua_State *L)
+{
+	const char *type = luaL_checkstring(L, 1);
+
+	int size = 0;
+	if (strcmp(type, "Float") == 0) {
+		size = sizeof(float);
+	}
+	else if (strcmp(type, "Double") == 0) {
+		size = sizeof(double);
+	}
+	else if (strcmp(type, "Int8") == 0) {
+		size = sizeof(int8);
+	}
+	else if (strcmp(type, "UInt8") == 0) {
+		size = sizeof(uint8);
+	}
+	else if (strcmp(type, "Int16") == 0) {
+		size = sizeof(int16);
+	}
+	else if (strcmp(type, "UInt16") == 0) {
+		size = sizeof(uint16);
+	}
+	else if (strcmp(type, "Int32") == 0) {
+		size = sizeof(int32);
+	}
+	else if (strcmp(type, "UInt32") == 0) {
+		size = sizeof(uint32);
+	}
+	else if (strcmp(type, "Vec2") == 0) {
+		size = sizeof(love::Vec2);
+	}
+	else {
+		return luaL_error(L, "Can't determine size of the specified data type.");
+	}
+
+	lua_pushinteger(L, size);
+	return 1;
+}
+
 // List of functions to wrap.
 static const luaL_Reg functions[] =
 {
@@ -447,6 +488,8 @@ static const luaL_Reg functions[] =
 	{ "encode", w_encode },
 	{ "decode", w_decode },
 	{ "hash", w_hash },
+
+	{ "sizeOf", w_sizeOf },
 
 	{ "pack", w_pack },
 	{ "unpack", w_unpack },

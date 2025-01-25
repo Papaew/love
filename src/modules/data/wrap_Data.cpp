@@ -21,6 +21,7 @@
 #include "wrap_Data.h"
 #include "common/int.h"
 #include "thread/threads.h"
+#include "common/Vector.h"
 
 // Put the Lua code directly into a raw string literal.
 static const char data_lua[] =
@@ -120,6 +121,30 @@ static int w_Data_getT(lua_State* L)
 	return count;
 }
 
+template <typename T>
+static int w_Data_getVectorT(lua_State* L)
+{
+	Data* t = luax_checkdata(L, 1);
+	int64 offset = (int64)luaL_checknumber(L, 2);
+	int count = (int)luaL_optinteger(L, 3, 1);
+
+	if (count <= 0)
+		return luaL_error(L, "Invalid count parameter (must be greater than 0)");
+
+	if (offset < 0 || offset + sizeof(T) * count > t->getSize())
+		return luaL_error(L, "The given offset and count parameters don't fit within the Data's size.");
+
+	auto data = (const T*)((uint8*)t->getData() + offset);
+
+	for (int i = 0; i < count; i++)
+	{
+		lua_pushnumber(L, (lua_Number) data[i].x);
+		lua_pushnumber(L, (lua_Number) data[i].y);
+	}
+
+	return count*2;
+}
+
 int w_Data_getFloat(lua_State* L)
 {
 	return w_Data_getT<float>(L);
@@ -160,6 +185,11 @@ int w_Data_getUInt32(lua_State* L)
 	return w_Data_getT<uint32>(L);
 }
 
+int w_Data_getVec2(lua_State* L)
+{
+	return w_Data_getVectorT<love::Vec2>(L);
+}
+
 // C functions in a struct, necessary for the FFI versions of Data methods.
 struct FFI_Data
 {
@@ -190,6 +220,7 @@ const luaL_Reg w_Data_functions[] =
 	{ "getUInt16", w_Data_getUInt16 },
 	{ "getInt32", w_Data_getInt32 },
 	{ "getUInt32", w_Data_getUInt32 },
+	{ "getVec2", w_Data_getVec2 },
 	{ 0, 0 }
 };
 

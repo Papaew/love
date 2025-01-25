@@ -21,6 +21,7 @@
 #include "wrap_ByteData.h"
 #include "wrap_Data.h"
 #include "common/config.h"
+#include "common/Vector.h"
 
 #include <algorithm>
 
@@ -95,6 +96,50 @@ static int w_ByteData_setT(lua_State *L)
 	return 0;
 }
 
+template <typename T>
+static int w_ByteData_setVectorT(lua_State *L)
+{
+	ByteData *t = luax_checkbytedata(L, 1);
+	int64 offset = (int64) luaL_checknumber(L, 2);
+
+	bool istable = lua_type(L, 3) == LUA_TTABLE;
+	int nargs = std::max(1, istable ? (int) luax_objlen(L, 3) : lua_gettop(L) - 2);
+
+	if (nargs % 2 != 0)
+		return luaL_error(L, "The number of elements must be even.");
+
+	int nvecs = nargs / 2;
+
+	if (offset < 0 || offset + sizeof(T) * nvecs > t->getSize())
+		return luaL_error(L, "The given offset and value parameters don't fit within the Data's size.");
+
+	auto data = (T *)((uint8 *) t->getData() + offset);
+
+	if (istable)
+	{
+		for (int i = 0; i < nvecs; i++)
+		{
+			lua_rawgeti(L, 3, i * 2 + 1);
+			data[i].x = (float)luaL_checknumber(L, -1);
+			lua_pop(L, 1);
+
+			lua_rawgeti(L, 3, i * 2 + 2);
+			data[i].y = (float)luaL_checknumber(L, -1);
+			lua_pop(L, 1);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < nvecs; i++)
+		{
+			data[i].x = (float)luaL_checknumber(L, 3 + i * 2);
+			data[i].y = (float)luaL_checknumber(L, 3 + i * 2 + 1);
+		}
+	}
+
+	return 0;
+}
+
 int w_ByteData_setFloat(lua_State *L)
 {
 	return w_ByteData_setT<float>(L);
@@ -135,6 +180,11 @@ int w_ByteData_setUInt32(lua_State *L)
 	return w_ByteData_setT<uint32>(L);
 }
 
+int w_ByteData_setVec2(lua_State *L)
+{
+	return w_ByteData_setVectorT<love::Vec2>(L);
+}
+
 static const luaL_Reg w_ByteData_functions[] =
 {
 	{ "clone", w_ByteData_clone },
@@ -147,6 +197,7 @@ static const luaL_Reg w_ByteData_functions[] =
 	{ "setUInt16", w_ByteData_setUInt16 },
 	{ "setInt32", w_ByteData_setInt32 },
 	{ "setUInt32", w_ByteData_setUInt32 },
+	{ "setVec2", w_ByteData_setVec2 },
 	{ 0, 0 }
 };
 

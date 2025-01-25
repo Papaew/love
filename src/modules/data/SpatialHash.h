@@ -3,6 +3,7 @@
 
 // LOVE
 #include "common/Object.h"
+#include "ByteData.h"
 
 #include <cstdint>
 
@@ -17,25 +18,34 @@ public:
 
 	static love::Type type;
 
-	SpatialHash(int maxObjects, float cellSize);
+	SpatialHash(int maxObjectCount, float spacing);
 
 	virtual ~SpatialHash();
 
-	void add(int32_t id, float x, float y);
+	int add(float &x, float &y);
+	void set(int index, float x, float y);
+	bool get(int index, float &x, float &y);
 	void query(float x, float y, float maxDist);
-	void reset();
+	void query(float x1, float y1, float x2, float y2);
+	void clear();
+	void process();
+
+	const love::data::ByteData &getData() const;
 
 private:
-
-	int maxObjects;
-	float cellSize;
+	float spacing;
 	int tableSize;
 
-	int32_t* cellStart;
-	int32_t* cellEntries;
-	int32_t* queryIds;
+	int *cellStart;
+	int *cellEntries;
+	int *queryIds;
 	int querySize;
 
+	int maxObjectCount;
+	int objCount;
+
+	love::data::ByteData data;
+	float *pData;
 }; // SpatialHash
 
 } // namespace data
