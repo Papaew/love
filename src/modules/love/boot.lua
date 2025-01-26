@@ -35,6 +35,38 @@ local function uridecode(s)
 	end)
 end
 
+local fstypes = {
+	-- mode, fullscreen, borderless
+	['windowed'] = {'desktop', false, false},
+	['frameless'] = {'desktop', false, true},
+	['fullscreen'] = {'exclusive', true, false}
+}
+
+local function convertFullscreenType(type)
+	local args = fstypes[type]
+	if not args then
+		log.error("Can't find fullscreen type '"..type"'.")
+		return 'desktop', false, false
+	end
+	local mode = args[1]
+	local fullscreen = args[2]
+	local borderless = args[3]
+	return mode, fullscreen, borderless
+end
+
+local function rotateDimensions(orientation, width, height)
+	local newWidth, newHeight = width, height
+	if orientation == 'landscape' then
+		newWidth = math.max(width, height)
+		newHeight = math.min(width, height)
+	elseif orientation == 'portrait' then
+		newWidth = math.min(width, height)
+		newHeight = math.max(width, height)
+	end
+
+	return newWidth, newHeight
+end
+
 local no_game_code = false
 local invalid_game_path = nil
 local main_file = "main.lua"
@@ -165,21 +197,22 @@ function love.init()
 		title = "Untitled",
 		version = love._version,
 		window = {
-			width = 800,
-			height = 600,
+			width = 1280,
+			height = 720,
 			x = nil,
 			y = nil,
 			minwidth = 1,
 			minheight = 1,
-			fullscreen = false,
-			fullscreentype = "desktop",
+			windowmode = "windowed",
+			orientation = "landscape",
 			displayindex = 1,
-			vsync = 1,
+			vsync = 0,
 			msaa = 0,
 			borderless = false,
 			resizable = false,
 			centered = true,
 			usedpiscale = true,
+			enablesleep = false,
 		},
 		graphics = {
 			gammacorrect = false,
@@ -389,14 +422,21 @@ function love.init()
 	if c.window and c.modules.window then
 		if c.window.icon then
 			assert(love.image, "If an icon is set in love.conf, love.image must be loaded.")
-			love.window.setIcon(love.image.newImageData(c.window.icon))
+			local icon = love.image.newImageData(c.window.icon)
+			love.window.setIcon(icon)
+			icon:release()
 		end
 
 		love.window.setTitle(c.window.title or c.title)
-		assert(love.window.setMode(c.window.width, c.window.height,
+		love.window.setDisplaySleepEnabled(c.window.enablesleep)
+
+		local width, height = rotateDimensions(c.window.orientation, c.window.width, c.window.height)
+		local fsmode, usefs, borderless = convertFullscreenType(c.window.windowmode)
+		borderless = c.window.borderless or borderless
+		assert(love.window.setMode(width, height,
 		{
-			fullscreen = c.window.fullscreen,
-			fullscreentype = c.window.fullscreentype,
+			fullscreen = usefs,
+			fullscreentype = fsmode,
 			vsync = c.window.vsync,
 			msaa = c.window.msaa,
 			stencil = c.window.stencil,
@@ -404,7 +444,7 @@ function love.init()
 			resizable = c.window.resizable,
 			minwidth = c.window.minwidth,
 			minheight = c.window.minheight,
-			borderless = c.window.borderless,
+			borderless = borderless,
 			centered = c.window.centered,
 			displayindex = c.window.displayindex,
 			display = c.window.display, -- deprecated
