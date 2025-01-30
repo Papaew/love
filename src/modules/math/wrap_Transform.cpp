@@ -186,6 +186,24 @@ int w_Transform_scale(lua_State *L)
 	return 1;
 }
 
+int w_Transform_scaleX(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	float sx = (float) luaL_checknumber(L, 2);
+	t->scale(sx, t->sy);
+	lua_pushvalue(L, 1);
+	return 1;
+}
+
+int w_Transform_scaleY(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	float sy = (float) luaL_checknumber(L, 2);
+	t->scale(t->sx, sy);
+	lua_pushvalue(L, 1);
+	return 1;
+}
+
 int w_Transform_shear(lua_State *L)
 {
 	Transform *t = luax_checktransform(L, 1);
@@ -193,6 +211,185 @@ int w_Transform_shear(lua_State *L)
 	float ky = (float) luaL_checknumber(L, 3);
 	t->shear(kx, ky);
 	lua_pushvalue(L, 1);
+	return 1;
+}
+
+int w_Transform_setPosition(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	float x = (float) luaL_checknumber(L, 2);
+	float y = (float) luaL_checknumber(L, 3);
+	t->setPosition(x, y);
+	lua_pushvalue(L, 1);
+	return 1;
+}
+
+int w_Transform_setX(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	float x = (float) luaL_checknumber(L, 2);
+	t->setPosition(x, t->y);
+	lua_pushvalue(L, 1);
+	return 1;
+}
+
+int w_Transform_setY(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	float y = (float) luaL_checknumber(L, 2);
+	t->setPosition(t->x, y);
+	lua_pushvalue(L, 1);
+	return 1;
+}
+
+int w_Transform_setFlip(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	float fx = (float) luaL_checknumber(L, 2);
+	float fy = (float) luaL_checknumber(L, 3);
+	t->setFlip(fx, fy);
+	lua_pushvalue(L, 1);
+	return 1;
+}
+
+int w_Transform_setFlipX(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	float fx = (float) luaL_checknumber(L, 2);
+	t->setFlip(fx, t->fy);
+	lua_pushvalue(L, 1);
+	return 1;
+}
+
+int w_Transform_setFlipY(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	float fy = (float) luaL_checknumber(L, 2);
+	t->setFlip(t->fx, fy);
+	lua_pushvalue(L, 1);
+	return 1;
+}
+
+int w_Transform_setOrigin(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	float ox = (float) luaL_checknumber(L, 2);
+	float oy = (float) luaL_checknumber(L, 3);
+	t->setOrigin(ox, oy);
+	lua_pushvalue(L, 1);
+	return 1;
+}
+
+int w_Transform_setOriginX(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	float ox = (float) luaL_checknumber(L, 2);
+	t->setOrigin(ox, t->oy);
+	lua_pushvalue(L, 1);
+	return 1;
+}
+
+int w_Transform_setOriginY(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	float oy = (float) luaL_checknumber(L, 2);
+	t->setOrigin(t->ox, oy);
+	lua_pushvalue(L, 1);
+	return 1;
+}
+
+int w_Transform_getPosition(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	lua_pushnumber(L, t->x);
+	lua_pushnumber(L, t->y);
+	return 2;
+}
+
+int w_Transform_getX(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	lua_pushnumber(L, t->x);
+	return 1;
+}
+
+int w_Transform_getY(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	lua_pushnumber(L, t->y);
+	return 1;
+}
+
+int w_Transform_getFlip(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	lua_pushnumber(L, t->fx);
+	lua_pushnumber(L, t->fy);
+	return 2;
+}
+
+int w_Transform_getFlipX(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	lua_pushnumber(L, t->fx);
+	return 1;
+}
+
+int w_Transform_getFlipY(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	lua_pushnumber(L, t->fy);
+	return 1;
+}
+
+int w_Transform_getAngle(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	lua_pushnumber(L, t->a);
+	return 1;
+}
+
+int w_Transform_getScale(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	lua_pushnumber(L, t->sx);
+	lua_pushnumber(L, t->sy);
+	return 2;
+}
+
+int w_Transform_getScaleX(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	lua_pushnumber(L, t->sx);
+	return 1;
+}
+
+int w_Transform_getScaleY(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	lua_pushnumber(L, t->sy);
+	return 1;
+}
+
+int w_Transform_getOrigin(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	lua_pushnumber(L, t->ox);
+	lua_pushnumber(L, t->oy);
+	return 2;
+}
+
+int w_Transform_getOriginX(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	lua_pushnumber(L, t->ox);
+	return 1;
+}
+
+int w_Transform_getOriginY(lua_State *L)
+{
+	Transform *t = luax_checktransform(L, 1);
+	lua_pushnumber(L, t->oy);
 	return 1;
 }
 
@@ -216,7 +413,9 @@ int w_Transform_setTransformation(lua_State *L)
 	float oy = (float) luaL_optnumber(L, 8, 0.0);
 	float kx = (float) luaL_optnumber(L, 9, 0.0);
 	float ky = (float) luaL_optnumber(L, 10, 0.0);
-	t->setTransformation(x, y, a, sx, sy, ox, oy, kx, ky);
+	float fx = (float) luaL_optnumber(L, 11, 1.0);
+	float fy = (float) luaL_optnumber(L, 12, 1.0);
+	t->setTransformation(x, y, a, sx, sy, ox, oy, kx, ky, fx, fy);
 	lua_pushvalue(L, 1);
 	return 1;
 }
@@ -303,7 +502,34 @@ static const luaL_Reg functions[] =
 	{ "translate", w_Transform_translate },
 	{ "rotate", w_Transform_rotate },
 	{ "scale", w_Transform_scale },
+	{ "scaleX", w_Transform_scaleX },
+	{ "scaleY", w_Transform_scaleY },
 	{ "shear", w_Transform_shear },
+
+	{ "setPosition", w_Transform_setPosition },
+	{ "setX", w_Transform_setX },
+	{ "setY", w_Transform_setY },
+	{ "setFlip", w_Transform_setFlip },
+	{ "setFlipX", w_Transform_setFlipX },
+	{ "setFlipY", w_Transform_setFlipY },
+	{ "setOrigin", w_Transform_setOrigin },
+	{ "setOriginX", w_Transform_setOriginX },
+	{ "setOriginY", w_Transform_setOriginY },
+
+	{ "getPosition", w_Transform_getPosition },
+	{ "getX", w_Transform_getX },
+	{ "getY", w_Transform_getY },
+	{ "getFlip", w_Transform_getFlip },
+	{ "getFlipX", w_Transform_getFlipX },
+	{ "getFlipY", w_Transform_getFlipY },
+	{ "getAngle", w_Transform_getAngle },
+	{ "getScale", w_Transform_getScale },
+	{ "getScaleX", w_Transform_getScaleX },
+	{ "getScaleY", w_Transform_getScaleY },
+	{ "getOrigin", w_Transform_getOrigin },
+	{ "getOriginX", w_Transform_getOriginX },
+	{ "getOriginY", w_Transform_getOriginY },
+
 	{ "reset", w_Transform_reset },
 	{ "setTransformation", w_Transform_setTransformation },
 	{ "setMatrix", w_Transform_setMatrix },

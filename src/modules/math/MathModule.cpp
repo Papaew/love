@@ -342,9 +342,9 @@ Transform *Math::newTransform()
 	return new Transform();
 }
 
-Transform *Math::newTransform(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky)
+Transform *Math::newTransform(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky, float fx, float fy)
 {
-	return new Transform(x, y, a, sx, sy, ox, oy, kx, ky);
+	return new Transform(x, y, a, sx, sy, ox, oy, kx, ky, fx, fy);
 }
 
 } // math
