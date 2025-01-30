@@ -129,7 +129,7 @@ public:
 	BezierCurve *newBezierCurve(const std::vector<Vector2> &points);
 
 	Transform *newTransform();
-	Transform *newTransform(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky);
+	Transform *newTransform(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky, float fx, float fy);
 
 private:
 

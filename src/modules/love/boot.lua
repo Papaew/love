@@ -394,10 +394,6 @@ function love.init()
 		end
 	end
 
-	if love.event then
-		love.createhandlers()
-	end
-
 	-- Check the version
 	c.version = tostring(c.version)
 	if not love.isVersionCompatible(c.version) then

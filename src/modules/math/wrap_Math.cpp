@@ -139,7 +139,9 @@ int w_newTransform(lua_State *L)
 		float oy = (float) luaL_optnumber(L, 7, 0.0);
 		float kx = (float) luaL_optnumber(L, 8, 0.0);
 		float ky = (float) luaL_optnumber(L, 9, 0.0);
-		t = instance()->newTransform(x, y, a, sx, sy, ox, oy, kx, ky);
+		float fx = (float) luaL_optnumber(L, 10, 0.0);
+		float fy = (float) luaL_optnumber(L, 11, 0.0);
+		t = instance()->newTransform(x, y, a, sx, sy, ox, oy, kx, ky, fx, fy);
 	}
 
 	luax_pushtype(L, t);

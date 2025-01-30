@@ -31,6 +31,7 @@ Transform::Transform()
 	: matrix()
 	, inverseDirty(true)
 	, inverseMatrix()
+	, x(0), y(0), a(0), sx(1), sy(1), ox(0), oy(0), kx(0), ky(0), fx(1), fy(1)
 {
 }
 
@@ -38,13 +39,15 @@ Transform::Transform(const Matrix4 &m)
 	: matrix(m)
 	, inverseDirty(true)
 	, inverseMatrix()
+	, x(0), y(0), a(0), sx(1), sy(1), ox(0), oy(0), kx(0), ky(0), fx(1), fy(1)
 {
 }
 
-Transform::Transform(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky)
+Transform::Transform(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky, float fx, float fy)
 	: matrix(x, y, a, sx, sy, ox, oy, kx, ky)
 	, inverseDirty(true)
 	, inverseMatrix()
+	, x(x), y(y), a(a), sx(sx), sy(sy), ox(ox), oy(oy), kx(kx), ky(ky), fx(fx), fy(fy)
 {
 }
 
@@ -62,6 +65,17 @@ Transform *Transform::inverse()
 	return new Transform(getInverseMatrix());
 }
 
+void Transform::refresh()
+{
+	matrix.setIdentity();
+	matrix.translate(x, y);
+	matrix.rotate(a);
+	matrix.scale(sx*fx, sy*fy);
+	matrix.shear(kx, ky);
+	matrix.translate(-ox, -oy);
+	inverseDirty = true;
+}
+
 void Transform::apply(Transform *other)
 {
 	matrix *= other->getMatrix();
@@ -70,37 +84,76 @@ void Transform::apply(Transform *other)
 
 void Transform::translate(float x, float y)
 {
-	matrix.translate(x, y);
-	inverseDirty = true;
+	this->x += x;
+	this->y += y;
+	// matrix.translate(x, y);
+	// inverseDirty = true;
+	refresh();
 }
 
 void Transform::rotate(float angle)
 {
-	matrix.rotate(angle);
-	inverseDirty = true;
+	this->a += angle;
+	// matrix.rotate(angle);
+	// inverseDirty = true;
+	refresh();
 }
 
 void Transform::scale(float x, float y)
 {
-	matrix.scale(x, y);
-	inverseDirty = true;
+	this->sx += x;
+	this->sy += y;
+	// matrix.scale(sx, sy);
+	// inverseDirty = true;
+	refresh();
 }
 
 void Transform::shear(float x, float y)
 {
-	matrix.shear(x, y);
-	inverseDirty = true;
+	this->kx = x;
+	this->ky = y;
+	// matrix.shear(x, y);
+	// inverseDirty = true;
+	refresh();
+}
+
+void Transform::setPosition(float x, float y)
+{
+	this->x = x;
+	this->y = y;
+	refresh();
+}
+
+void Transform::setFlip(float x, float y)
+{
+	this->fx = x;
+	this->fy = y;
+	refresh();
+}
+
+void Transform::setOrigin(float x, float y)
+{
+	this->ox = x;
+	this->oy = y;
+	refresh();
 }
 
 void Transform::reset()
 {
 	matrix.setIdentity();
+	x=0, y=0, a=0, sx=1, sy=1, ox=0, oy=0, kx=0, ky=0, fx=1, fy=1;
 	inverseDirty = true;
 }
 
-void Transform::setTransformation(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky)
+void Transform::setTransformation(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky, float fx, float fy)
 {
-	matrix.setTransformation(x, y, a, sx, sy, ox, oy, kx, ky);
+	matrix.setTransformation(x, y, a, sx*fx, sy*fy, ox, oy, kx, ky);
+	this->x=x, this->y=y;
+	this->a=a;
+	this->sx=sx, this->sy=sy;
+	this->ox=ox, this->oy=oy;
+	this->kx=kx, this->ky=ky;
+	this->fx=fx, this->fy=fy;
 	inverseDirty = true;
 }
 

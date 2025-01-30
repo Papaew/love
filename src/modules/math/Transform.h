@@ -43,10 +43,11 @@ public:
 	};
 
 	static love::Type type;
+	float x, y, a, sx, sy, ox, oy, kx, ky, fx, fy;
 
 	Transform();
 	Transform(const Matrix4 &m);
-	Transform(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky);
+	Transform(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky, float fx, float fy);
 
 	virtual ~Transform();
 
@@ -60,8 +61,12 @@ public:
 	void scale(float x, float y);
 	void shear(float x, float y);
 
+	void setPosition(float x, float y);
+	void setFlip(float x, float y);
+	void setOrigin(float x, float y);
+
 	void reset();
-	void setTransformation(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky);
+	void setTransformation(float x, float y, float a, float sx, float sy, float ox, float oy, float kx, float ky, float fx, float fy);
 
 	love::Vector2 transformPoint(love::Vector2 p) const;
 	love::Vector2 inverseTransformPoint(love::Vector2 p);
@@ -89,6 +94,8 @@ private:
 	Matrix4 matrix;
 	bool inverseDirty;
 	Matrix4 inverseMatrix;
+
+	void refresh();
 
 	static StringMap<MatrixLayout, MATRIX_MAX_ENUM>::Entry matrixLayoutEntries[];
 	static StringMap<MatrixLayout, MATRIX_MAX_ENUM> matrixLayouts;
