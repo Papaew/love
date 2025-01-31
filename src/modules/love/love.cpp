@@ -26,6 +26,7 @@
 #include "modules/window/Window.h"
 
 #include "love.h"
+#include "limb/limb.h"
 
 // C++
 #include <string>
@@ -675,6 +676,8 @@ int luaopen_love(lua_State *L)
 #ifdef LOVE_ENABLE_LUAHTTPS
 	love::luax_preload(L, luaopen_https, "https");
 #endif
+
+	love::luax_preload(L, luaopen_limb, "limb");
 
 #ifdef LOVE_ENABLE_WINDOW
 	// In some environments, LuaJIT is limited to 2GB and LuaJIT sometimes panic when it

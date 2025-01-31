@@ -1915,6 +1915,18 @@ add_library(love_3p_xxhash
 )
 
 #
+# LIMB
+#
+
+add_library(love_3p_limb
+	src/modules/limb/limb.cpp
+	src/modules/limb/limb.h
+)
+target_link_libraries(love_3p_limb lovedep::Lua)
+
+# lovedep::Lua
+
+#
 # liblove
 #
 include_directories(
@@ -1987,6 +1999,7 @@ set(LIBLOVE_LIBRARIES
 	love_3p_spirv_cross
 	love_3p_wuff
 	love_3p_xxhash
+	love_3p_limb
 )
 target_link_libraries(liblove ${LIBLOVE_DEPENDENCIES} ${LIBLOVE_LIBRARIES})
 
