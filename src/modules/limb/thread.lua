@@ -1,7 +1,6 @@
 R"luastring"--(
 -- DO NOT REMOVE THE ABOVE LINE. It is used to load this file as a C++ string.
 -- There is a matching delimiter at the bottom of the file.
-
 local thread_cls = require('limb.common.luathread')
 
 local _M = {}
@@ -32,6 +31,5 @@ function _M.newThread(f)
 end
 
 return _M
-
 -- DO NOT REMOVE THE NEXT LINE. It is used to load this file as a C++ string.
 --)luastring"--"

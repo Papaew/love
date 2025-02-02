@@ -1,9 +1,6 @@
 R"luastring"--(
 -- DO NOT REMOVE THE ABOVE LINE. It is used to load this file as a C++ string.
 -- There is a matching delimiter at the bottom of the file.
-
-local class = require('class')
-
 limb.renderer = require('limb.renderer')
 limb.thread = require('limb.thread')
 limb.scenes = require('limb.scenes')
@@ -27,8 +24,8 @@ limb.boot = function(c)
 	g.setPointSize(1)
 	g.setLineStyle('rough')
 	g.setDefaultFilter('nearest', 'nearest', 16)
+	g.setBackgroundColor(0, 0, 0, 1)
 
-	-- local c = json.read('application.json')
 	love.setDeprecationOutput(c.showDeprecationOutput)
 	love.filesystem.setIdentity(c.identity, c.appendToPath)
 	love.keyboard.setKeyRepeat(c.keyRepeatEnabled)
@@ -37,10 +34,6 @@ limb.boot = function(c)
 
 	limb.callbacks.init()
 	limb.renderer.addLayers(c.layers)
-
-	-- require('src.scenes.main')
-	-- limb.scenes.presentScene('Main')
 end
-
 -- DO NOT REMOVE THE NEXT LINE. It is used to load this file as a C++ string.
 --)luastring"--"

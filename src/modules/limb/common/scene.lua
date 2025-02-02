@@ -1,7 +1,6 @@
 R"luastring"--(
 -- DO NOT REMOVE THE ABOVE LINE. It is used to load this file as a C++ string.
 -- There is a matching delimiter at the bottom of the file.
-
 local class = require('class')
 local layer = require('limb.common.layer')
 
@@ -96,11 +95,8 @@ function Scene:render()
 
 	g.push('all')
 		g.applyTransform(self._transform)
-		g.setColor(1,1,1)
-		g.rectangle('fill', 0,0, 1920, 1080)
-
-		g.setColor(1,0,0)
-		g.rectangle('line', 0,0, 1920, 1080)
+		-- g.setColor(g.getBackgroundColor())
+		-- g.rectangle('fill', 0,0, 1920, 1080)
 		while true do
 			local element = list[process]
 			if not element then break end
@@ -177,6 +173,5 @@ function Scene:resize(w, h)
 end
 
 return Scene
-
 -- DO NOT REMOVE THE NEXT LINE. It is used to load this file as a C++ string.
 --)luastring"--"

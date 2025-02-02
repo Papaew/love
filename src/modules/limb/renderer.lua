@@ -1,7 +1,6 @@
 R"luastring"--(
 -- DO NOT REMOVE THE ABOVE LINE. It is used to load this file as a C++ string.
 -- There is a matching delimiter at the bottom of the file.
-
 local layer_cls = require('limb.common.layer')
 
 local _M = {}
@@ -56,6 +55,5 @@ function _M.resize(w, h)
 end
 
 return _M
-
 -- DO NOT REMOVE THE NEXT LINE. It is used to load this file as a C++ string.
 --)luastring"--"

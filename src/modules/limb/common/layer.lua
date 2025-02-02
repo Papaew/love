@@ -1,13 +1,12 @@
 R"luastring"--(
 -- DO NOT REMOVE THE ABOVE LINE. It is used to load this file as a C++ string.
 -- There is a matching delimiter at the bottom of the file.
-
 local class = require('class')
 local g = love.graphics
 
-local layer = class()
+local Layer = class()
 
-function layer:init(name, usedepth)
+function Layer:init(name, usedepth)
 	self._name = name
 	self._canvas = {}
 	self._objects = {}
@@ -20,7 +19,7 @@ function layer:init(name, usedepth)
 	self:resize(g.getDimensions())
 end
 
-function layer:release()
+function Layer:release()
 	self._drawable = false
 	self._visible = false
 	self._transform:release()
@@ -37,7 +36,7 @@ function layer:release()
 	self = nil
 end
 
-function layer:addObject(object)
+function Layer:addObject(object)
 	if object.layer then
 		error("Object already added to layer '"..self:getName().."'", 2)
 		return false
@@ -48,13 +47,13 @@ function layer:addObject(object)
 	return true
 end
 
-function layer:removeObject(object)
+function Layer:removeObject(object)
 	object.layer = nil
 	rawset(self._objects, object, nil)
 	return type(self._objects[object]) ~= 'nil'
 end
 
-function layer:render()
+function Layer:render()
 	g.push('all')
 		g.setCanvas(self._canvas)
 			if self._usedepth then
@@ -82,7 +81,7 @@ function layer:render()
 	g.pop()
 end
 
-function layer:resize(w, h)
+function Layer:resize(w, h)
 	self._canvas[1] = g.newCanvas(w, h, { format = "normal" })
 
 	if self._usedepth then
@@ -90,30 +89,29 @@ function layer:resize(w, h)
 	end
 end
 
-function layer:setTransform(t)
+function Layer:setTransform(t)
 	self._transform = t
 end
 
-function layer:setVisible(state)
+function Layer:setVisible(state)
 	self._visible = state
 end
 
-function layer:setOpacity(value)
+function Layer:setOpacity(value)
 	self._opacity = value
 end
 
-function layer:getTransform()
+function Layer:getTransform()
 	return self._transform
 end
 
-function layer:getOpacity()
+function Layer:getOpacity()
 	return self._opacity
 end
 
-function layer:getName() return self._name end
-function layer:isUseDepth() return self._usedepth end
+function Layer:getName() return self._name end
+function Layer:isUseDepth() return self._usedepth end
 
-return layer
-
+return Layer
 -- DO NOT REMOVE THE NEXT LINE. It is used to load this file as a C++ string.
 --)luastring"--"

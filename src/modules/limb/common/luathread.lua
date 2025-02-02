@@ -1,27 +1,26 @@
 R"luastring"--(
 -- DO NOT REMOVE THE ABOVE LINE. It is used to load this file as a C++ string.
 -- There is a matching delimiter at the bottom of the file.
-
 local class = require('class')
 
-local luaThread = class()
+local LuaThread = class()
 
-function luaThread:init(body)
+function LuaThread:init(body)
 	self._alive = false
 	self._paused = true
 	self._time = 0
 	self._co = coroutine.create(body)
 end
 
-function luaThread:type()
+function LuaThread:type()
 	return 'thread'
 end
 
-function luaThread:typeOf(name)
+function LuaThread:typeOf(name)
 	return name == 'thread'
 end
 
-function luaThread:start(...)
+function LuaThread:start(...)
 	self._alive = true
 	self._paused = false
 
@@ -32,7 +31,7 @@ function luaThread:start(...)
 	self._alive = coroutine.status(self._co) ~= 'dead'
 end
 
-function luaThread:process(dt)
+function LuaThread:process(dt)
 	if not self._alive or self._paused then return end
 	self._time = self._time + dt
 
@@ -45,41 +44,40 @@ function luaThread:process(dt)
 	end
 end
 
-function luaThread:stop()
+function LuaThread:stop()
 	if not self._alive then return end
 	self._paused = false
 	self._alive = false
 end
 
-function luaThread:pause()
+function LuaThread:pause()
 	if not self._alive then return end
 	self._paused = true
 end
 
-function luaThread:resume()
+function LuaThread:resume()
 	if not self._alive then return end
 	self._paused = false
 end
 
-function luaThread:release()
+function LuaThread:release()
 	self:stop()
 	self._co = nil
 	self = nil
 end
 
-function luaThread:setTime(time)
+function LuaThread:setTime(time)
 	self._time = time
 end
 
-function luaThread:isAlive()
+function LuaThread:isAlive()
 	return self._alive
 end
 
-function luaThread:getTime()
+function LuaThread:getTime()
 	return self._time
 end
 
-return luaThread
-
+return LuaThread
 -- DO NOT REMOVE THE NEXT LINE. It is used to load this file as a C++ string.
 --)luastring"--"

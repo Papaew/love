@@ -3,42 +3,7 @@
 #include "common/runtime.h"
 
 #include "limb.h"
-
-// Встраиваем все Lua-файлы
-static const char limb_callback_lua[] = 
-#include "limb/common/callback.lua"
-;
-static const char limb_drawable_lua[] = 
-#include "limb/common/drawable.lua"
-;
-static const char limb_layer_lua[] = 
-#include "limb/common/layer.lua"
-;
-static const char limb_luathread_lua[] = 
-#include "limb/common/luathread.lua"
-;
-static const char limb_scene_lua[] = 
-#include "limb/common/scene.lua"
-;
-
-static const char limb_class_lua[] = 
-#include "limb/class.lua"
-;
-static const char limb_core_lua[] = 
-#include "limb/core.lua"
-;
-static const char limb_renderer_lua[] = 
-#include "limb/renderer.lua"
-;
-static const char limb_thread_lua[] = 
-#include "limb/thread.lua"
-;
-static const char limb_scenes_lua[] = 
-#include "limb/scenes.lua"
-;
-static const char limb_callbacks_lua[] = 
-#include "limb/callbacks.lua"
-;
+#include "limbmodules.h"
 
 extern "C"
 {
@@ -70,10 +35,8 @@ static const luaL_Reg modules[] = {
 	{ 0, 0 }
 };
 
-// Функция для загрузки Lua-модуля из встроенного массива
 static int load_lua_module(lua_State *L, const char *code, size_t code_len, const char *name)
 {
-	// Загружаем Lua-код из буфера
 	if (luaL_loadbuffer(L, code, code_len, name) != 0)
 		return lua_error(L);
 
@@ -83,17 +46,17 @@ static int load_lua_module(lua_State *L, const char *code, size_t code_len, cons
 	return 1;
 }
 
-int luaopen_limb_callback(lua_State *L) { return load_lua_module(L, limb_callback_lua, sizeof(limb_callback_lua) - 1, "=[limb \"callback.lua\"]"); }
-int luaopen_limb_drawable(lua_State *L) { return load_lua_module(L, limb_drawable_lua, sizeof(limb_drawable_lua) - 1, "=[limb \"drawable.lua\"]"); }
-int luaopen_limb_scene(lua_State *L) { return load_lua_module(L, limb_scene_lua, sizeof(limb_scene_lua) - 1, "=[limb \"scene.lua\"]"); }
-int luaopen_limb_luathread(lua_State *L) { return load_lua_module(L, limb_luathread_lua, sizeof(limb_luathread_lua) - 1, "=[limb \"luathread.lua\"]"); }
-int luaopen_limb_layer(lua_State *L) { return load_lua_module(L, limb_layer_lua, sizeof(limb_layer_lua) - 1, "=[limb \"layer.lua\"]"); }
+int luaopen_limb_callback(lua_State *L) { return load_lua_module(L, limb::callback_lua, sizeof(limb::callback_lua) - 1, "=[limb \"callback.lua\"]"); }
+int luaopen_limb_drawable(lua_State *L) { return load_lua_module(L, limb::drawable_lua, sizeof(limb::drawable_lua) - 1, "=[limb \"drawable.lua\"]"); }
+int luaopen_limb_scene(lua_State *L) { return load_lua_module(L, limb::scene_lua, sizeof(limb::scene_lua) - 1, "=[limb \"scene.lua\"]"); }
+int luaopen_limb_luathread(lua_State *L) { return load_lua_module(L, limb::luathread_lua, sizeof(limb::luathread_lua) - 1, "=[limb \"luathread.lua\"]"); }
+int luaopen_limb_layer(lua_State *L) { return load_lua_module(L, limb::layer_lua, sizeof(limb::layer_lua) - 1, "=[limb \"layer.lua\"]"); }
 
-int luaopen_limb_class(lua_State *L) { return load_lua_module(L, limb_class_lua, sizeof(limb_class_lua) - 1, "=[limb \"class.lua\"]"); }
-int luaopen_limb_renderer(lua_State *L) { return load_lua_module(L, limb_renderer_lua, sizeof(limb_renderer_lua) - 1, "=[limb \"renderer.lua\"]"); }
-int luaopen_limb_thread(lua_State *L) { return load_lua_module(L, limb_thread_lua, sizeof(limb_thread_lua) - 1, "=[limb \"thread.lua\"]"); }
-int luaopen_limb_scenes(lua_State *L) { return load_lua_module(L, limb_scenes_lua, sizeof(limb_scenes_lua) - 1, "=[limb \"scenes.lua\"]"); }
-int luaopen_limb_callbacks(lua_State *L) { return load_lua_module(L, limb_callbacks_lua, sizeof(limb_callbacks_lua) - 1, "=[limb \"callbacks.lua\"]"); }
+int luaopen_limb_class(lua_State *L) { return load_lua_module(L, limb::class_lua, sizeof(limb::class_lua) - 1, "=[limb \"class.lua\"]"); }
+int luaopen_limb_renderer(lua_State *L) { return load_lua_module(L, limb::renderer_lua, sizeof(limb::renderer_lua) - 1, "=[limb \"renderer.lua\"]"); }
+int luaopen_limb_thread(lua_State *L) { return load_lua_module(L, limb::thread_lua, sizeof(limb::thread_lua) - 1, "=[limb \"thread.lua\"]"); }
+int luaopen_limb_scenes(lua_State *L) { return load_lua_module(L, limb::scenes_lua, sizeof(limb::scenes_lua) - 1, "=[limb \"scenes.lua\"]"); }
+int luaopen_limb_callbacks(lua_State *L) { return load_lua_module(L, limb::callbacks_lua, sizeof(limb::callbacks_lua) - 1, "=[limb \"callbacks.lua\"]"); }
 
 int luaopen_limb(lua_State *L)
 {
@@ -105,8 +68,7 @@ int luaopen_limb(lua_State *L)
 	lua_pushstring(L, limb::VERSION);
 	lua_setfield(L, -2, "_version");
 
-	// love::luax_preload(L, luaopen_limb_class, "class");
-	load_lua_module(L, limb_core_lua, sizeof(limb_core_lua) - 1, "=[limb \"core.lua\"]");
+	load_lua_module(L, limb::core_lua, sizeof(limb::core_lua) - 1, "=[limb \"core.lua\"]");
 
 	return 1;
 }

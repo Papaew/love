@@ -1,7 +1,6 @@
 R"luastring"--(
 -- DO NOT REMOVE THE ABOVE LINE. It is used to load this file as a C++ string.
 -- There is a matching delimiter at the bottom of the file.
-
 return function(baseclass)
 	-- "Class" is the new class
 	local Class = {}
@@ -25,6 +24,5 @@ return function(baseclass)
 
 	return Class
 end
-
 -- DO NOT REMOVE THE NEXT LINE. It is used to load this file as a C++ string.
 --)luastring"--"

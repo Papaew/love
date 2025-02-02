@@ -1,7 +1,6 @@
 R"luastring"--(
 -- DO NOT REMOVE THE ABOVE LINE. It is used to load this file as a C++ string.
 -- There is a matching delimiter at the bottom of the file.
-
 local callback_cls = require('limb.common.callback')
 
 local _M = {}
@@ -205,6 +204,5 @@ limb.sensorupdated = function(sensorType, x, y, z)
 end
 
 return _M
-
 -- DO NOT REMOVE THE NEXT LINE. It is used to load this file as a C++ string.
 --)luastring"--"
