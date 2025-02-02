@@ -52,8 +52,11 @@ function _M.render()
 end
 
 function _M.resize(w, h)
-	for _, v in ipairs(limb.app.scenes.active) do
-		v:resize(w, h)
+	for _,scene in ipairs(limb.app.scenes.active) do
+		for _,layer in pairs(scene._layers.by_name) do
+			layer:resize(w, h)
+		end
+		scene:resize(w, h)
 	end
 end
 

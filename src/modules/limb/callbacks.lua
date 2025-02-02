@@ -18,6 +18,7 @@ function _M.init()
 		'on_touch_move',
 		'on_touch_down',
 		'on_touch_up',
+		'on_window_resize',
 	} do
 		limb.app.handlers[name] = {}
 	end
@@ -164,6 +165,11 @@ limb.threaderror = function(t, err)
 end
 
 limb.resize = function(w, h)
+	limb.renderer.resize(w, h)
+	limb.scenes.resize(w, h)
+	for _,cb in pairs(limb.app.handlers['on_window_resize']) do
+		cb:call(w, h)
+	end
 end
 
 limb.filedropped = function(f, x, y)
