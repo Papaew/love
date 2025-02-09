@@ -87,6 +87,11 @@ void ByteData::create()
 	}
 }
 
+void ByteData::clear()
+{
+	memset(data, 0, size);
+}
+
 ByteData *ByteData::clone() const
 {
 	return new ByteData(*this);

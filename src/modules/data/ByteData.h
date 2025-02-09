@@ -45,6 +45,7 @@ public:
 	ByteData *clone() const override;
 	void *getData() const override;
 	size_t getSize() const override;
+	void clear();
 
 private:
 

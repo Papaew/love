@@ -45,6 +45,13 @@ int w_ByteData_clone(lua_State *L)
 	return 1;
 }
 
+int w_ByteData_clear(lua_State *L)
+{
+	ByteData *t = luax_checkbytedata(L, 1);
+	t->clear();
+	return 0;
+}
+
 int w_ByteData_setString(lua_State *L)
 {
 	Data *t = luax_checkdata(L, 1);
@@ -187,6 +194,7 @@ int w_ByteData_setVec2(lua_State *L)
 
 static const luaL_Reg w_ByteData_functions[] =
 {
+	{ "clear", w_ByteData_clear },
 	{ "clone", w_ByteData_clone },
 	{ "setString", w_ByteData_setString },
 	{ "setFloat", w_ByteData_setFloat },
