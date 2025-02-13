@@ -75,6 +75,7 @@ public:
 	void setWindowTitle(const std::string &title) override;
 	const std::string &getWindowTitle() const override;
 
+	bool getDesktopScreenshot(love::image::ImageData *imgd, int width, int height) override;
 	bool setIcon(love::image::ImageData *imgd) override;
 	love::image::ImageData *getIcon() override;
 

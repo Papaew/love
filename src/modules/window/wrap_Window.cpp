@@ -21,6 +21,8 @@
 #include "wrap_Window.h"
 #include "sdl/Window.h"
 #include "common/Reference.h"
+#include "common/pixelformat.h"
+#include "image/Image.h"
 
 namespace love
 {
@@ -681,6 +683,69 @@ static void fileDialogCallback(void *context, const std::vector<std::string> &fi
 		throw love::Exception("Error in file dialog callback: %s", lua_tostring(L, -1));
 }
 
+int w_captureDesktopScreenshot(lua_State* L)
+{
+	int width = 0, height = 0;
+	int displayindex = 0;
+	image::ImageData* i = nullptr;
+
+	if (lua_isuserdata(L, 1))
+	{
+		i = luax_checktype<image::ImageData>(L, 1);
+		if (lua_isnumber(L, 2))
+			displayindex = (int)luaL_checkinteger(L, 2) - 1;
+	}
+	else if (lua_isnumber(L, 1))
+	{
+		displayindex = (int)luaL_checkinteger(L, 1) - 1;
+	}
+	else if (lua_isnoneornil(L, 1))
+	{
+		int x, y;
+		instance()->getPosition(x, y, displayindex);
+	}
+
+	instance()->getDesktopDimensions(displayindex, width, height);
+
+	if (i == nullptr)
+	{
+		auto imagemodule = Module::getInstance<image::Image>(Module::M_IMAGE);
+		i = imagemodule->newImageData(width, height, PIXELFORMAT_BGRA8_UNORM);
+	}
+	else if (i->getFormat() != PIXELFORMAT_BGRA8_UNORM)
+	{
+		PixelFormat format = i->getFormat();
+		const char *fstr = nullptr;
+
+		if (!getConstant(format, fstr))
+			return luaL_error(L, "Unknown pixel format.");
+
+		return luaL_error(L, "Invalid ImageData format. Expected bgra8, got %s", fstr);
+	}
+
+	bool success = false;
+	try
+	{
+		success = instance()->getDesktopScreenshot(i, width, height);
+	}
+	catch (const love::Exception& e)
+	{
+		lua_pushstring(L, e.what());
+		lua_error(L);
+		return 0;
+	}
+
+	if (!success)
+	{
+		lua_pushstring(L, "Failed to capture desktop screenshot.");
+		lua_error(L);
+		return 0;
+	}
+
+	luax_pushtype(L, i);
+	return 1;
+}
+
 int w_showFileDialog(lua_State *L)
 {
 	Window::FileDialogData data = {};
@@ -780,6 +845,7 @@ static const luaL_Reg functions[] =
 	{ "isOpen", w_isOpen },
 	{ "close", w_close },
 	{ "getDesktopDimensions", w_getDesktopDimensions },
+	{ "captureDesktopScreenshot", w_captureDesktopScreenshot },
 	{ "setPosition", w_setPosition },
 	{ "getPosition", w_getPosition },
 	{ "getSafeArea", w_getSafeArea },

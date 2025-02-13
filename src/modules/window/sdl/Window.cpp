@@ -20,6 +20,7 @@
 
 // LOVE
 #include "common/config.h"
+#include "common/pixelformat.h"
 #include "graphics/Graphics.h"
 #ifdef LOVE_GRAPHICS_VULKAN
 #	include "graphics/vulkan/Graphics.h"
@@ -1091,6 +1092,60 @@ bool Window::setIcon(love::image::ImageData *imgd)
 love::image::ImageData *Window::getIcon()
 {
 	return icon.get();
+}
+
+bool Window::getDesktopScreenshot(love::image::ImageData *imgd, int width, int height) 
+{
+	if (!imgd)
+		return false;
+
+	if (imgd->getFormat() != PIXELFORMAT_BGRA8_UNORM)
+		return false;
+
+	int displayindex = 0;
+
+	getDesktopDimensions(displayindex, width, height);
+
+	if (width == 0 || height == 0)
+		return false;
+
+#ifdef _WIN32
+	HDC hScreen = GetDC(NULL);
+	HDC hDC = CreateCompatibleDC(hScreen);
+	HBITMAP hBitmap = CreateCompatibleBitmap(hScreen, width, height);
+	SelectObject(hDC, hBitmap);
+	BitBlt(hDC, 0, 0, width, height, hScreen, 0, 0, SRCCOPY);
+
+	BITMAPINFO bmi = { 0 };
+	bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bmi.bmiHeader.biWidth = width;
+	bmi.bmiHeader.biHeight = -height;
+	bmi.bmiHeader.biPlanes = 1;
+	bmi.bmiHeader.biBitCount = 32;
+	bmi.bmiHeader.biCompression = BI_RGB;
+
+	char *pixels = nullptr;
+	int size = width * height * 4;
+	pixels = new char[size];
+	if (!GetDIBits(hDC, hBitmap, 0, height, pixels, &bmi, DIB_RGB_COLORS))
+	{
+		DeleteObject(hBitmap);
+		DeleteDC(hDC);
+		ReleaseDC(NULL, hScreen);
+		return false;
+	}
+
+	DeleteObject(hBitmap);
+	DeleteDC(hDC);
+	ReleaseDC(NULL, hScreen);
+
+	memcpy(imgd->getData(), pixels, size);
+	delete[] pixels;
+
+	return true;
+#else
+	return false;
+#endif
 }
 
 void Window::setVSync(int vsync)

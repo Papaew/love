@@ -192,6 +192,7 @@ public:
 	virtual const std::string &getWindowTitle() const = 0;
 
 	virtual bool setIcon(love::image::ImageData *imgd) = 0;
+	virtual bool getDesktopScreenshot(love::image::ImageData *imgd, int width, int height) = 0;
 	virtual love::image::ImageData *getIcon() = 0;
 
 	virtual void setVSync(int vsync) = 0;
