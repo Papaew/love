@@ -573,8 +573,15 @@ int w_dist3sq(lua_State *L)
 
 int w_round(lua_State *L)
 {
-	float value = (float) luaL_checknumber(L, 1);
-	lua_pushnumber(L, (lua_Number) round(value));
+	double num = luaL_checknumber(L, 1);
+	int decimals = luaL_optinteger(L, 2, 0);
+
+	if (decimals < 0)
+		return luaL_error(L, "Second argument must be equal or greater than zero.");
+
+	double mult = std::pow(10.0, decimals);
+	double result = std::floor(num * mult + 0.5) / mult;
+	lua_pushnumber(L, result);
 	return 1;
 }
 
