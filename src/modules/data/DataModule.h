@@ -23,6 +23,8 @@
 #include "CompressedData.h"
 #include "Compressor.h"
 #include "SpatialHash.h"
+#include "NoiseData.h"
+#include "TileData.h"
 #include "HashFunction.h"
 #include "DataView.h"
 #include "ByteData.h"
@@ -120,6 +122,8 @@ public:
 
 	DataView *newDataView(Data *data, size_t offset, size_t size);
 	SpatialHash *newSpatialHash(int maxObjects, float cellSize);
+	NoiseData *newNoiseData(int width);
+	TileData *newTileData(int width, float surface);
 	ByteData *newByteData(size_t size);
 	ByteData *newByteData(const void *d, size_t size);
 	ByteData *newByteData(void *d, size_t size, bool own);

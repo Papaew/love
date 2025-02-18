@@ -390,6 +390,10 @@ add_library(love_data STATIC
 	src/modules/data/ByteData.h
 	src/modules/data/SpatialHash.cpp
 	src/modules/data/SpatialHash.h
+	src/modules/data/NoiseData.cpp
+	src/modules/data/NoiseData.h
+	src/modules/data/TileData.cpp
+	src/modules/data/TileData.h
 	src/modules/data/CompressedData.cpp
 	src/modules/data/CompressedData.h
 	src/modules/data/Compressor.cpp
@@ -406,6 +410,10 @@ add_library(love_data STATIC
 	src/modules/data/wrap_ByteData.h
 	src/modules/data/wrap_SpatialHash.cpp
 	src/modules/data/wrap_SpatialHash.h
+	src/modules/data/wrap_NoiseData.cpp
+	src/modules/data/wrap_NoiseData.h
+	src/modules/data/wrap_TileData.cpp
+	src/modules/data/wrap_TileData.h
 	src/modules/data/wrap_CompressedData.cpp
 	src/modules/data/wrap_CompressedData.h
 	src/modules/data/wrap_Data.cpp

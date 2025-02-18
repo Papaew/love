@@ -73,10 +73,10 @@ int w_SpatialHash_process(lua_State *L)
 
 int w_SpatialHash_getData(lua_State *L)
 {
-    SpatialHash *s = luax_checkspatialhash(L, 1);
-    love::data::ByteData *data = const_cast<love::data::ByteData *>(&s->getData());
-    luax_pushtype(L, love::data::ByteData::type, data);
-    return 1;
+	SpatialHash *s = luax_checkspatialhash(L, 1);
+	love::data::ByteData *data = const_cast<love::data::ByteData *>(&s->getData());
+	luax_pushtype(L, love::data::ByteData::type, data);
+	return 1;
 }
 
 static const luaL_Reg functions[] =

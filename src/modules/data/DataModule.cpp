@@ -232,6 +232,16 @@ SpatialHash *DataModule::newSpatialHash(int maxObjects, float cellSize)
 	return new SpatialHash(maxObjects, cellSize);
 }
 
+NoiseData *DataModule::newNoiseData(int width)
+{
+	return new NoiseData(width);
+}
+
+TileData *DataModule::newTileData(int width, float surface)
+{
+	return new TileData(width, surface);
+}
+
 ByteData *DataModule::newByteData(size_t size)
 {
 	return new ByteData(size);

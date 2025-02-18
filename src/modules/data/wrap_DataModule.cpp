@@ -21,6 +21,8 @@
 // LOVE
 #include "wrap_DataModule.h"
 #include "wrap_SpatialHash.h"
+#include "wrap_NoiseData.h"
+#include "wrap_TileData.h"
 #include "wrap_Data.h"
 #include "wrap_ByteData.h"
 #include "wrap_DataView.h"
@@ -71,6 +73,29 @@ int w_newSpatialHash(lua_State *L)
 
 	luax_pushtype(L, s);
 	s->release();
+	return 1;
+}
+
+int w_newNoiseData(lua_State *L)
+{
+	NoiseData *n = nullptr;
+	int width = (int) luaL_checknumber(L, 1);
+	n = instance()->newNoiseData(width);
+
+	luax_pushtype(L, n);
+	n->release();
+	return 1;
+}
+
+int w_newTileData(lua_State *L)
+{
+	TileData *t = nullptr;
+	int width = (int) luaL_checknumber(L, 1);
+	float surface = (float) luaL_checknumber(L, 2);
+	t = instance()->newTileData(width, surface);
+
+	luax_pushtype(L, t);
+	t->release();
 	return 1;
 }
 
@@ -482,6 +507,8 @@ static const luaL_Reg functions[] =
 {
 	{ "newDataView", w_newDataView },
 	{ "newSpatialHash", w_newSpatialHash },
+	{ "newNoiseData", w_newNoiseData },
+	{ "newTileData", w_newTileData },
 	{ "newByteData", w_newByteData },
 	{ "compress", w_compress },
 	{ "decompress", w_decompress },
@@ -502,6 +529,8 @@ static const lua_CFunction types[] =
 {
 	luaopen_data,
 	luaopen_spatialhash,
+	luaopen_noisedata,
+	luaopen_tiledata,
 	luaopen_bytedata,
 	luaopen_dataview,
 	luaopen_compresseddata,

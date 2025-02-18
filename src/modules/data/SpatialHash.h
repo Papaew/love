@@ -51,4 +51,4 @@ private:
 } // namespace data
 } // namespace love
 
-#endif
+#endif // LOVE_DATA_SPATIALHASH_H
