@@ -41,10 +41,29 @@ void TileData::generate()
 	}
 }
 
-void TileData::setTileValue(int ix, int iy, int value)
+void TileData::setTileValue(int ix, int iy, uint8_t value)
 {
 	int index = iy * width + ix;
 	tiles[index].value = value;
+}
+
+void TileData::setTileValueByIndex(int index, uint8_t value)
+{
+	tiles[index].value = value;
+}
+
+void TileData::setTileWeights(int ix, int iy, float E, float F, float J, float K)
+{
+	int index = iy * width + ix;
+	tiles[index].E = E;
+	tiles[index].F = F;
+	tiles[index].J = J;
+	tiles[index].K = K;
+}
+
+void TileData::setSurfaceLevel(float surface)
+{
+	this->surface = surface;
 }
 
 int TileData::getWidth()
@@ -66,6 +85,24 @@ int TileData::getTileValue(int ix, int iy)
 {
 	int index = iy * width + ix;
 	return tiles[index].value;
+}
+
+int TileData::getTileValueByIndex(int index)
+{
+	return tiles[index].value;
+}
+
+void TileData::getTileWeights(int ix, int iy, float &E, float &F, float &J, float &K)
+{
+	int index = iy * width + ix;
+	E = tiles[index].E;
+	F = tiles[index].F;
+	J = tiles[index].J;
+	K = tiles[index].K;
+}
+
+Tile* TileData::getTiles() {
+	return tiles;
 }
 
 } // data

@@ -30,8 +30,38 @@ int w_TileData_setTileValue(lua_State *L)
 	TileData *t = luax_checktiledata(L, 1);
 	int ix = (int) luaL_checkinteger(L, 2);
 	int iy = (int) luaL_checkinteger(L, 3);
-	int value = (int) luaL_checkinteger(L, 4);
+	uint8_t value = (uint8_t) luaL_checkinteger(L, 4);
 	t->setTileValue(ix, iy, value);
+	return 0;
+}
+
+int w_TileData_setTileValueByIndex(lua_State *L)
+{
+	TileData *t = luax_checktiledata(L, 1);
+	int index = (int) luaL_checkinteger(L, 2);
+	uint8_t value = (uint8_t) luaL_checkinteger(L, 3);
+	t->setTileValueByIndex(index, value);
+	return 0;
+}
+
+int w_TileData_setTileWeights(lua_State *L)
+{
+	TileData *t = luax_checktiledata(L, 1);
+	int ix = (int) luaL_checkinteger(L, 2);
+	int iy = (int) luaL_checkinteger(L, 3);
+	float E = (float) luaL_checknumber(L, 4);
+	float F = (float) luaL_checknumber(L, 5);
+	float J = (float) luaL_checknumber(L, 6);
+	float K = (float) luaL_checknumber(L, 7);
+	t->setTileWeights(ix, iy, E, F, J, K);
+	return 0;
+}
+
+int w_TileData_setSurfaceLevel(lua_State *L)
+{
+	TileData *t = luax_checktiledata(L, 1);
+	float surface = (float) luaL_checknumber(L, 2);
+	t->setSurfaceLevel(surface);
 	return 0;
 }
 
@@ -65,6 +95,28 @@ int w_TileData_getTileValue(lua_State *L)
 	return 1;
 }
 
+int w_TileData_getTileValueByIndex(lua_State *L)
+{
+	TileData *t = luax_checktiledata(L, 1);
+	int index = (int) luaL_checkinteger(L, 2);
+	lua_pushnumber(L, (lua_Number) t->getTileValueByIndex(index));
+	return 1;
+}
+
+int w_TileData_getTileWeights(lua_State *L)
+{
+	TileData *t = luax_checktiledata(L, 1);
+	int ix = (int) luaL_checkinteger(L, 2);
+	int iy = (int) luaL_checkinteger(L, 3);
+	float E, F, J, K;
+	t->getTileWeights(ix, iy, E, F, J, K);
+	lua_pushnumber(L, (lua_Number) E);
+	lua_pushnumber(L, (lua_Number) F);
+	lua_pushnumber(L, (lua_Number) J);
+	lua_pushnumber(L, (lua_Number) K);
+	return 4;
+}
+
 int w_TileData_getData(lua_State *L)
 {
 	TileData *t = luax_checktiledata(L, 1);
@@ -79,10 +131,15 @@ static const luaL_Reg functions[] =
 	{ "generate", w_TileData_generate },
 
 	{ "setTileValue", w_TileData_setTileValue },
-
+	{ "setTileValueByIndex", w_TileData_setTileValueByIndex },
+	{ "setTileWeights", w_TileData_setTileWeights },
+	{ "setSurfaceLevel", w_TileData_setSurfaceLevel },
+	
 	{ "getWidth", w_TileData_getWidth },
 	{ "getVirtualWidth", w_TileData_getVirtualWidth },
 	{ "getTileValue", w_TileData_getTileValue },
+	{ "getTileValueByIndex", w_TileData_getTileValueByIndex },
+	{ "getTileWeights", w_TileData_getTileWeights },
 	{ "getSurfaceLevel", w_TileData_getSurfaceLevel },
 	{ "getData", w_TileData_getData },
 	{ 0, 0 }

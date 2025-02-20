@@ -14,7 +14,7 @@ namespace data
 
 struct Tile
 {
-	int value;
+	uint8_t value;
 	float E, F, J, K;
 };
 
@@ -32,11 +32,17 @@ public:
 	int getWidth();
 	int getVirtualWidth();
 	int getTileValue(int ix, int iy);
+	int getTileValueByIndex(int index);
+	void setTileWeights(int ix, int iy, float E, float F, float J, float K);
 	float getSurfaceLevel();
 
-	void setTileValue(int ix, int iy, int value);
+	void setTileValue(int ix, int iy, uint8_t value);
+	void setTileValueByIndex(int index, uint8_t value);
+	void getTileWeights(int ix, int iy, float &E, float &F, float &J, float &K);
+	void setSurfaceLevel(float surface);
 
 	const love::data::ByteData &getData() const;
+	Tile* getTiles();
 
 private:
 	int width;
