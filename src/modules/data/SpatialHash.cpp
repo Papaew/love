@@ -182,7 +182,7 @@ const int* SpatialHash::getQueryIds() const
 int SpatialHash::hashCoords(int x, int y)
 {
 	int h = (x * X_HASH_CONST) ^ (y * Y_HASH_CONST);
-	return h % tableSize;
+	return std::abs(h % tableSize);
 }
 
 } // namespace data
