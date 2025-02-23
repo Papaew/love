@@ -26,7 +26,9 @@ local love_math, ffifuncspointer_str = ...
 
 local type, tonumber, error = type, tonumber, error
 local floor = math.floor
+local sqrt = math.sqrt
 local min, max = math.min, math.max
+local unpack = table.unpack or unpack
 
 local function clamp01(x)
 	return min(max(x, 0), 1)
@@ -36,6 +38,30 @@ local rng = love_math._getRandomGenerator()
 
 function love_math.random(l, u)
 	return rng:random(l, u)
+end
+
+function love_math.randomf(l, u)
+	return (l or 0) + rng:random() * ((u or 1) - (l or 0))
+end
+
+function love_math.normalize(...)
+	local args = { ... }
+	local len = 0
+	for i = 1, #args do
+		len = len + args[i] * args[i]
+	end
+	len = sqrt(len)
+	if len == 0 then
+		for i = 1, #args do
+			args[i] = 0
+		end
+	else
+		for i = 1, #args do
+			args[i] = args[i] / len
+		end
+	end
+
+	return unpack(args)
 end
 
 function love_math.randomNormal(stddev, mean)
