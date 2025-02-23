@@ -5,7 +5,7 @@
 #include "common/Object.h"
 #include "ByteData.h"
 
-#include <cstdint>
+// #include <cstdint>
 
 namespace love
 {
@@ -31,6 +31,10 @@ public:
 	void process();
 
 	const love::data::ByteData &getData() const;
+	int getQuerySize() const;
+	int getObjectCount() const;
+	int hashCoords(int x, int y);
+	const int* getQueryIds() const;
 
 private:
 	float spacing;

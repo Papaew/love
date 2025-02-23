@@ -33,7 +33,7 @@ end
 function _M.presentScene(name)
 	local scene = _M.findScene(name) or error('Not found scene ' .. name, 2)
 	_M.pushActive(scene)
-	if not scene._loaded then
+	if not scene:isLoaded() then
 		scene:boot(true)
 	end
 	scene:present()

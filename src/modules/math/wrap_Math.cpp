@@ -596,6 +596,17 @@ int w_dot(lua_State *L)
 	return 1;
 }
 
+int w_det(lua_State *L)
+{
+	float x1 = (float) luaL_checknumber(L, 1);
+	float y1 = (float) luaL_checknumber(L, 2);
+	float x2 = (float) luaL_checknumber(L, 3);
+	float y2 = (float) luaL_checknumber(L, 4);
+	float result = x1 * y2 - y1 * x2;
+	lua_pushnumber(L, (lua_Number) result);
+	return 1;
+}
+
 int w_clamp(lua_State *L)
 {
 	float value = (float) luaL_checknumber(L, 1);

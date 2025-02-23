@@ -1,4 +1,3 @@
-
 #include "wrap_SpatialHash.h"
 
 namespace love
@@ -50,11 +49,60 @@ int w_SpatialHash_get(lua_State *L)
 	return 2;
 }
 
+int w_SpatialHash_getQuerySize(lua_State *L)
+{
+	SpatialHash *s = luax_checkspatialhash(L, 1);
+	lua_pushnumber(L, s->getQuerySize());
+	return 1;
+}
+
+int w_SpatialHash_getObjectCount(lua_State *L)
+{
+	SpatialHash *s = luax_checkspatialhash(L, 1);
+	lua_pushinteger(L, s->getObjectCount());
+	return 1;
+}
+
+int w_SpatialHash_getHashCoords(lua_State *L)
+{
+	SpatialHash *s = luax_checkspatialhash(L, 1);
+	lua_pushinteger(L, s->getQuerySize());
+	return 1;
+}
+
 int w_SpatialHash_query(lua_State *L)
 {
 	SpatialHash *s = luax_checkspatialhash(L, 1);
-	s->query(0.0f, 0.0f, 0.0f);
-	return 0;
+	int nargs = lua_gettop(L);
+	if (nargs == 4)
+	{
+		float x = luax_checkfloat(L, 2);
+		float y = luax_checkfloat(L, 3);
+		float maxDist = luax_checkfloat(L, 4);
+		s->query(x, y, maxDist);
+	}
+	else if (nargs == 5)
+	{
+		float x1 = luax_checkfloat(L, 2);
+		float y1 = luax_checkfloat(L, 3);
+		float x2 = luax_checkfloat(L, 4);
+		float y2 = luax_checkfloat(L, 5);
+		s->query(x1, y1, x2, y2);
+	}
+	else
+	{
+		return luaL_error(L, "SpatialHash: wrong argument count, 4 or 3 expected, got %d", nargs);
+	}
+
+	lua_newtable(L);
+	int qSize = s->getQuerySize();
+	const int* qIds = s->getQueryIds();
+	for (int i = 0; i < qSize; i++)
+	{
+		lua_pushnumber(L, qIds[i]);
+		lua_rawseti(L, -2, i + 1);
+	}
+	return 1;
 }
 
 int w_SpatialHash_clear(lua_State *L)
@@ -81,11 +129,14 @@ int w_SpatialHash_getData(lua_State *L)
 
 static const luaL_Reg functions[] =
 {
+	{ "clear", w_SpatialHash_clear },
 	{ "add", w_SpatialHash_add },
 	{ "set", w_SpatialHash_set },
 	{ "get", w_SpatialHash_get },
-	{ "clear", w_SpatialHash_clear },
 	{ "query", w_SpatialHash_query },
+	{ "getQuerySize", w_SpatialHash_getQuerySize },
+	{ "getObjectCount", w_SpatialHash_getObjectCount },
+	{ "getHashCoords", w_SpatialHash_getHashCoords },
 	{ "process", w_SpatialHash_process },
 	{ "getData", w_SpatialHash_getData },
 	{ 0, 0 }
@@ -96,5 +147,5 @@ extern "C" int luaopen_spatialhash(lua_State *L)
 	return luax_register_type(L, &SpatialHash::type, functions, nullptr);
 }
 
-} // data
-} // love
+} // namespace data
+} // namespace love
